@@ -1,0 +1,91 @@
+<view class="container">
+  <view class="section">
+    <view class="title">🔍 诈骗识别助手</view>
+    <view class="description">输入或拍照可疑信息，我们帮你判断是否为诈骗</view>
+  </view>
+
+  <!-- 输入方式选择 -->
+  <view class="input-method">
+    <button class="method-btn {{inputType === 'text' ? 'active' : ''}}" bindtap="setInputType" data-type="text">
+      📝 文字输入
+    </button>
+    <button class="method-btn {{inputType === 'image' ? 'active' : ''}}" bindtap="setInputType" data-type="image">
+      📸 拍照识别
+    </button>
+  </view>
+
+  <!-- 文字输入 -->
+  <view class="section" wx:if="{{inputType === 'text'}}">
+    <textarea
+      class="input-textarea"
+      placeholder="粘贴或输入可疑信息（短信、链接、聊天记录等）"
+      maxlength="500"
+      bindinput="onTextInput"
+      value="{{inputText}}"
+    />
+    <view class="char-count">{{inputText.length}}/500</view>
+    <button class="submit-btn" bindtap="identifyText">识别</button>
+  </view>
+
+  <!-- 图片输入 -->
+  <view class="section" wx:if="{{inputType === 'image'}}">
+    <view class="image-upload" bindtap="chooseImage">
+      <view class="upload-icon">📸</view>
+      <view class="upload-text">点击选择截图</view>
+    </view>
+    <view wx:if="{{uploadedImage}}" class="uploaded-image">
+      <image src="{{uploadedImage}}" mode="aspectFit" />
+    </view>
+    <button class="submit-btn" bindtap="identifyImage" wx:if="{{uploadedImage}}">识别图片</button>
+  </view>
+
+  <!-- 识别结果 -->
+  <view class="section" wx:if="{{showResult}}">
+    <view class="result-card {{result.riskLevel}}">
+      <view class="result-header">
+        <view class="risk-icon">{{result.icon}}</view>
+        <view class="risk-title">{{result.riskTitle}}</view>
+      </view>
+
+      <view class="result-level">
+        <text class="level-label">风险等级：</text>
+        <text class="level-value {{result.riskLevel}}">{{result.riskLevelText}}</text>
+      </view>
+
+      <view class="result-description">
+        <view class="label">诈骗手段：</view>
+        <view class="content">{{result.fraudMethod}}</view>
+      </view>
+
+      <view class="result-description">
+        <view class="label">识别特征：</view>
+        <view class="content">
+          <view wx:for="{{result.features}}" wx:key="index" class="feature-item">• {{item}}</view>
+        </view>
+      </view>
+
+      <view class="result-description">
+        <view class="label">应对方法：</view>
+        <view class="content">
+          <view wx:for="{{result.countermeasures}}" wx:key="index" class="measure-item">{{index + 1}}. {{item}}</view>
+        </view>
+      </view>
+
+      <view class="result-action">
+        <button class="action-btn report-btn" bindtap="reportFraud">🚨 举报</button>
+        <button class="action-btn share-btn" bindtap="shareFraud">📤 分享警告</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史记录 -->
+  <view class="section">
+    <view class="title">📋 识别历史</view>
+    <view class="history-item" wx:for="{{history}}" wx:key="id" bindtap="viewHistory" data-id="{{item.id}}">
+      <view class="history-time">{{item.time}}</view>
+      <view class="history-text">{{item.text}}</view>
+      <view class="history-risk {{item.riskLevel}}">{{item.riskLevelText}}</view>
+    </view>
+    <view class="empty" wx:if="{{history.length === 0}}">暂无识别记录</view>
+  </view>
+</view>

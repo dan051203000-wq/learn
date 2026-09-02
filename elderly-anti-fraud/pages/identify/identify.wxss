@@ -1,0 +1,295 @@
+.container {
+  padding-bottom: 50rpx;
+}
+
+.section {
+  background-color: white;
+  margin: 20rpx;
+  padding: 20rpx;
+  border-radius: 12rpx;
+}
+
+.title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.description {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.5;
+}
+
+/* 输入方式切换 */
+.input-method {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx;
+  background-color: white;
+  margin: 20rpx;
+}
+
+.method-btn {
+  flex: 1;
+  background-color: #f0f0f0;
+  color: #666;
+  border: 2rpx solid #ddd;
+  border-radius: 8rpx;
+  padding: 15rpx;
+  font-size: 26rpx;
+}
+
+.method-btn.active {
+  background-color: #2196F3;
+  color: white;
+  border-color: #2196F3;
+}
+
+/* 文本输入 */
+.input-textarea {
+  width: 100%;
+  height: 200rpx;
+  padding: 15rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  box-sizing: border-box;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 5rpx;
+}
+
+/* 图片上传 */
+.image-upload {
+  border: 2rpx dashed #2196F3;
+  border-radius: 12rpx;
+  padding: 40rpx 20rpx;
+  text-align: center;
+  background-color: #f0f8ff;
+}
+
+.upload-icon {
+  font-size: 60rpx;
+  margin-bottom: 10rpx;
+}
+
+.upload-text {
+  font-size: 26rpx;
+  color: #2196F3;
+}
+
+.uploaded-image {
+  margin-top: 20rpx;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.uploaded-image image {
+  width: 100%;
+  display: block;
+}
+
+/* 提交按钮 */
+.submit-btn {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 结果卡片 */
+.result-card {
+  background-color: #f9f9f9;
+  border-radius: 12rpx;
+  padding: 25rpx;
+  border-left: 5rpx solid;
+}
+
+.result-card.high {
+  border-color: #ff6b6b;
+  background-color: #fff5f5;
+}
+
+.result-card.medium {
+  border-color: #ffa94d;
+  background-color: #fffbf0;
+}
+
+.result-card.low {
+  border-color: #51cf66;
+  background-color: #f1fdf4;
+}
+
+.result-card.none {
+  border-color: #4dabf7;
+  background-color: #f0f7ff;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.risk-icon {
+  font-size: 40rpx;
+  margin-right: 15rpx;
+}
+
+.risk-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.result-level {
+  margin-bottom: 15rpx;
+  font-size: 26rpx;
+}
+
+.level-label {
+  color: #666;
+}
+
+.level-value {
+  font-weight: bold;
+  margin-left: 10rpx;
+}
+
+.level-value.high {
+  color: #ff6b6b;
+}
+
+.level-value.medium {
+  color: #ffa94d;
+}
+
+.level-value.low {
+  color: #51cf66;
+}
+
+.level-value.none {
+  color: #4dabf7;
+}
+
+.result-description {
+  margin-bottom: 20rpx;
+}
+
+.result-description .label {
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.result-description .content {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.6;
+  padding-left: 20rpx;
+}
+
+.feature-item,
+.measure-item {
+  margin-bottom: 8rpx;
+}
+
+/* 操作按钮 */
+.result-action {
+  display: flex;
+  gap: 15rpx;
+  margin-top: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  border: none;
+  border-radius: 8rpx;
+  padding: 15rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+.report-btn {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.share-btn {
+  background-color: #4dabf7;
+  color: white;
+}
+
+/* 历史记录 */
+.history-item {
+  border-bottom: 1rpx solid #f0f0f0;
+  padding: 15rpx 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.history-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: #666;
+  margin: 0 15rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-risk {
+  font-size: 20rpx;
+  padding: 5rpx 10rpx;
+  border-radius: 12rpx;
+  font-weight: bold;
+}
+
+.history-risk.high {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.history-risk.medium {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.history-risk.low {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.history-risk.none {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 40rpx;
+  font-size: 26rpx;
+}

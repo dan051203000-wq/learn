@@ -1,0 +1,90 @@
+/**app.wxss**/
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 200rpx 0;
+  box-sizing: border-box;
+}
+
+page {
+  background-color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 按钮样式 */
+.btn {
+  background-color: #2196F3;
+  color: white;
+  border-radius: 8rpx;
+  padding: 20rpx 40rpx;
+  margin: 20rpx;
+  border: none;
+  font-size: 32rpx;
+}
+
+.btn:active {
+  background-color: #0b7be5;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: white;
+  border-radius: 8rpx;
+  padding: 30rpx;
+  margin: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 标题样式 */
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 15rpx;
+}
+
+/* 文本样式 */
+.text {
+  font-size: 28rpx;
+  color: #999;
+  line-height: 1.6;
+}
+
+/* 风险等级样式 */
+.risk-level {
+  display: inline-block;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: bold;
+  margin-top: 10rpx;
+}
+
+.risk-high {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.risk-medium {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.risk-low {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.risk-none {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}

@@ -1,0 +1,53 @@
+<view class="container">
+  <!-- 头部欢迎信息 -->
+  <view class="header">
+    <view class="greeting">你好，{{ userName || '朋友' }}</view>
+    <view class="subtitle">防诈骗从我们做起</view>
+  </view>
+
+  <!-- 快速导航卡片 -->
+  <view class="quick-nav">
+    <view class="nav-item" bindtap="goIdentify">
+      <view class="nav-icon">🔍</view>
+      <view class="nav-title">诈骗识别</view>
+      <view class="nav-desc">快速识别可疑信息</view>
+    </view>
+    <view class="nav-item" bindtap="goCommunity">
+      <view class="nav-icon">💬</view>
+      <view class="nav-title">求助社区</view>
+      <view class="nav-desc">互助防诈</view>
+    </view>
+    <view class="nav-item" bindtap="goKnowledge">
+      <view class="nav-icon">📚</view>
+      <view class="nav-title">防诈知识</view>
+      <view class="nav-desc">学习防诈技巧</view>
+    </view>
+    <view class="nav-item" bindtap="goReport">
+      <view class="nav-icon">🚨</view>
+      <view class="nav-title">诈骗举报</view>
+      <view class="nav-desc">举报诈骗信息</view>
+    </view>
+  </view>
+
+  <!-- 最新提醒 -->
+  <view class="section">
+    <view class="section-title">⚠️ 最新诈骗警报</view>
+    <view class="alert-card" wx:for="{{alerts}}" wx:key="id" bindtap="viewAlertDetail" data-id="{{item.id}}">
+      <view class="alert-title">{{item.title}}</view>
+      <view class="alert-desc">{{item.description}}</view>
+      <view class="alert-date">{{item.date}}</view>
+    </view>
+  </view>
+
+  <!-- 家庭守护提醒 -->
+  <view class="section" wx:if="{{showGuardian}}">
+    <view class="section-title">👨‍👩‍👧‍👦 家庭守护</view>
+    <view class="guardian-card">
+      <view class="guardian-info">
+        <view class="guardian-name">{{guardianName}}</view>
+        <view class="guardian-status">正在守护中</view>
+      </view>
+      <button class="guardian-btn" bindtap="goFamily">管理守护</button>
+    </view>
+  </view>
+</view>

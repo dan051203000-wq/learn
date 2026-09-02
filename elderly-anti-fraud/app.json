@@ -1,0 +1,55 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/identify/identify",
+    "pages/cases/cases",
+    "pages/community/community",
+    "pages/family/family",
+    "pages/knowledge/knowledge",
+    "pages/report/report",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#2196F3",
+    "navigationBarTitleText": "防诈骗互助",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#2196F3",
+    "borderStyle": "black",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/identify/identify",
+        "text": "识别诈骗",
+        "iconPath": "assets/icons/scan.png",
+        "selectedIconPath": "assets/icons/scan-active.png"
+      },
+      {
+        "pagePath": "pages/community/community",
+        "text": "求助社区",
+        "iconPath": "assets/icons/community.png",
+        "selectedIconPath": "assets/icons/community-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于展示附近信息"
+    }
+  }
+}
