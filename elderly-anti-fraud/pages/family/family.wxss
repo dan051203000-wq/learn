@@ -1,0 +1,326 @@
+.container {
+  padding: 20rpx 0 60rpx;
+}
+
+/* 顶部提示 */
+.page-tip {
+  display: flex;
+  align-items: center;
+  background-color: #e3f2fd;
+  margin: 20rpx;
+  padding: 24rpx;
+  border-radius: 12rpx;
+}
+
+.tip-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+
+.tip-text {
+  font-size: 28rpx;
+  color: #1565c0;
+  line-height: 1.5;
+}
+
+/* 角色选择 */
+.role-card {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 12rpx;
+  margin: 0 20rpx 20rpx;
+  padding: 32rpx 28rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.role-icon {
+  font-size: 56rpx;
+  margin-right: 24rpx;
+}
+
+.role-info {
+  flex: 1;
+}
+
+.role-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.role-desc {
+  font-size: 26rpx;
+  color: #777;
+  margin-top: 8rpx;
+  line-height: 1.5;
+}
+
+.role-arrow {
+  font-size: 40rpx;
+  color: #ccc;
+}
+
+/* 守护码 */
+.code-card {
+  background: linear-gradient(135deg, #2196F3, #64b5f6);
+  border-radius: 16rpx;
+  margin: 20rpx;
+  padding: 40rpx;
+  text-align: center;
+}
+
+.code-title {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.code-number {
+  font-size: 88rpx;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 16rpx;
+  margin: 24rpx 0;
+}
+
+.code-desc {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+}
+
+.code-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 32rpx;
+}
+
+.code-btn {
+  flex: 1;
+  border-radius: 30rpx;
+  font-size: 28rpx;
+  padding: 4rpx 0;
+  margin: 0;
+}
+
+.code-btn.primary {
+  background-color: white;
+  color: #2196F3;
+  font-weight: bold;
+}
+
+.code-btn.plain {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.switch-role {
+  text-align: center;
+  font-size: 26rpx;
+  color: #999;
+  padding: 20rpx 0;
+}
+
+/* 绑定 */
+.bind-card {
+  background-color: white;
+  border-radius: 12rpx;
+  margin: 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.bind-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.bind-desc {
+  font-size: 25rpx;
+  color: #888;
+  margin-top: 10rpx;
+  line-height: 1.6;
+}
+
+.bind-toggle {
+  text-align: center;
+  color: #2196F3;
+  font-size: 28rpx;
+  margin-top: 20rpx;
+  padding: 8rpx 0;
+}
+
+.bind-item {
+  margin-top: 24rpx;
+}
+
+.bind-label {
+  font-size: 27rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.bind-input {
+  background-color: #f9f9f9;
+  border: 1rpx solid #eee;
+  border-radius: 8rpx;
+  padding: 18rpx 20rpx;
+  font-size: 30rpx;
+}
+
+.bind-submit {
+  background-color: #2196F3;
+  color: white;
+  border-radius: 30rpx;
+  font-size: 30rpx;
+  margin-top: 32rpx;
+  padding: 4rpx 0;
+}
+
+/* 成员列表 / 动态 */
+.members-card,
+.events-card,
+.remind-card {
+  background-color: white;
+  border-radius: 12rpx;
+  margin: 0 20rpx 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.members-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  font-size: 30rpx;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.member-info {
+  flex: 1;
+}
+
+.member-name {
+  font-size: 29rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.member-meta {
+  font-size: 23rpx;
+  color: #999;
+  margin-top: 6rpx;
+}
+
+.member-remove {
+  font-size: 25rpx;
+  color: #c62828;
+  padding: 8rpx 16rpx;
+}
+
+/* 快捷提醒 */
+.remind-card {
+  display: flex;
+  align-items: center;
+}
+
+.remind-icon {
+  font-size: 44rpx;
+  margin-right: 20rpx;
+}
+
+.remind-text {
+  flex: 1;
+  font-size: 29rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.remind-arrow {
+  font-size: 40rpx;
+  color: #ccc;
+}
+
+/* 守护动态 */
+.event-item {
+  display: flex;
+  padding: 14rpx 0;
+}
+
+.event-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background-color: #2196F3;
+  margin: 14rpx 20rpx 0 6rpx;
+  flex-shrink: 0;
+}
+
+.event-main {
+  flex: 1;
+}
+
+.event-text {
+  font-size: 27rpx;
+  color: #444;
+  line-height: 1.6;
+}
+
+.event-result {
+  color: #e65100;
+  font-weight: bold;
+}
+
+.event-time {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+/* 底部热线 */
+.hotline-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hotline-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.hotline-desc {
+  font-size: 25rpx;
+  color: #777;
+  margin-top: 8rpx;
+}
+
+.hotline-phone {
+  font-size: 52rpx;
+}

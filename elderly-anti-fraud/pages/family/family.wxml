@@ -1,0 +1,120 @@
+<view class="container">
+  <!-- 角色选择 -->
+  <block wx:if="{{!role}}">
+    <view class="page-tip">
+      <view class="tip-icon">👨‍👩‍👧‍👦</view>
+      <view class="tip-text">先选择您的角色，开启家庭守护</view>
+    </view>
+
+    <view class="role-card" bindtap="chooseRole" data-role="elder">
+      <view class="role-icon">👵👴</view>
+      <view class="role-info">
+        <view class="role-title">我是长辈</view>
+        <view class="role-desc">生成专属守护码，让子女绑定守护我</view>
+      </view>
+      <view class="role-arrow">›</view>
+    </view>
+
+    <view class="role-card" bindtap="chooseRole" data-role="guardian">
+      <view class="role-icon">🧑‍💼</view>
+      <view class="role-info">
+        <view class="role-title">我是守护者</view>
+        <view class="role-desc">输入长辈的守护码，守护家里老人</view>
+      </view>
+      <view class="role-arrow">›</view>
+    </view>
+  </block>
+
+  <!-- 我是长辈：展示守护码 -->
+  <block wx:if="{{role === 'elder'}}">
+    <view class="code-card">
+      <view class="code-title">我的守护码</view>
+      <view class="code-number">{{myCode}}</view>
+      <view class="code-desc">把守护码告诉子女，请他们在小程序中绑定，即可守护您</view>
+      <view class="code-actions">
+        <button class="code-btn primary" bindtap="copyCode">📋 复制守护码</button>
+        <button class="code-btn plain" bindtap="refreshCode">🔄 更换</button>
+      </view>
+    </view>
+
+    <view class="switch-role" bindtap="switchRole">切换角色 ›</view>
+  </block>
+
+  <!-- 我是守护者：绑定 + 成员列表 -->
+  <block wx:if="{{role === 'guardian'}}">
+    <view class="bind-card">
+      <view class="bind-title">➕ 绑定要守护的家人</view>
+      <view class="bind-desc">请长辈打开小程序的"家庭守护"，生成并告知您守护码</view>
+
+      <view class="bind-form" wx:if="{{showBind}}">
+        <view class="bind-item">
+          <view class="bind-label">长辈的守护码</view>
+          <input
+            class="bind-input"
+            type="number"
+            maxlength="6"
+            placeholder="6位数字"
+            value="{{inputCode}}"
+            bindinput="onCodeInput"
+          />
+        </view>
+        <view class="bind-item">
+          <view class="bind-label">称呼（如：妈妈、王大爷）</view>
+          <input
+            class="bind-input"
+            type="text"
+            placeholder="选填"
+            value="{{inputName}}"
+            bindinput="onNameInput"
+          />
+        </view>
+        <button class="bind-submit" bindtap="bindMember">确认绑定</button>
+      </view>
+
+      <view class="bind-toggle" bindtap="toggleBind">{{showBind ? '收起' : '展开绑定'}}</view>
+    </view>
+
+    <!-- 守护成员列表 -->
+    <view class="members-card" wx:if="{{members.length > 0}}">
+      <view class="members-title">🛡️ 我在守护（{{members.length}}人）</view>
+      <view class="member-item" wx:for="{{members}}" wx:key="code">
+        <view class="member-avatar">{{item.name[0]}}</view>
+        <view class="member-info">
+          <view class="member-name">{{item.name}}</view>
+          <view class="member-meta">守护码 {{item.code}} · {{item.status}}</view>
+        </view>
+        <view class="member-remove" bindtap="removeMember" data-index="{{index}}">解除</view>
+      </view>
+    </view>
+
+    <!-- 快捷提醒 -->
+    <view class="remind-card" bindtap="remindFamily">
+      <view class="remind-icon">📣</view>
+      <view class="remind-text">给家人发一条防诈提醒</view>
+      <view class="remind-arrow">›</view>
+    </view>
+
+    <view class="switch-role" bindtap="switchRole">切换角色 ›</view>
+  </block>
+
+  <!-- 守护动态 -->
+  <view class="events-card" wx:if="{{recentEvents.length > 0}}">
+    <view class="members-title">🕰️ 守护动态</view>
+    <view class="event-item" wx:for="{{recentEvents}}" wx:key="index">
+      <view class="event-dot"></view>
+      <view class="event-main">
+        <view class="event-text">{{item.nickName}}{{item.action}}<text class="event-result">（{{item.result}}）</text></view>
+        <view class="event-time">{{item.time}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部热线 -->
+  <view class="hotline-card card" bindtap="callHotline">
+    <view class="hotline-left">
+      <view class="hotline-title">有拿不准的事？</view>
+      <view class="hotline-desc">随时拨打全国反诈专线 96110</view>
+    </view>
+    <view class="hotline-phone">📞</view>
+  </view>
+</view>

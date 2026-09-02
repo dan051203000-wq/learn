@@ -1,0 +1,84 @@
+<view class="container">
+  <!-- 顶部提示 -->
+  <view class="page-tip">
+    <view class="tip-icon">📖</view>
+    <view class="tip-text">看看别人是怎么被骗的，多学一招，少上一当</view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <scroll-view class="category-bar" scroll-x>
+    <view
+      wx:for="{{categories}}"
+      wx:key="*this"
+      class="category-item {{currentCategory === item ? 'active' : ''}}"
+      bindtap="switchCategory"
+      data-category="{{item}}"
+    >{{item}}</view>
+  </scroll-view>
+
+  <!-- 案例列表 -->
+  <view class="case-list">
+    <view
+      wx:for="{{filteredList}}"
+      wx:key="id"
+      class="case-card"
+      bindtap="viewCase"
+      data-id="{{item.id || item._id}}"
+    >
+      <view class="case-top">
+        <view class="case-title">{{item.title}}</view>
+        <view class="risk-level {{item.riskLevel === 'high' ? 'risk-high' : (item.riskLevel === 'medium' ? 'risk-medium' : 'risk-low')}}">{{item.riskText}}</view>
+      </view>
+      <view class="case-category"># {{item.category}}</view>
+      <view class="case-desc">{{item.description}}</view>
+      <view class="case-bottom">
+        <view class="case-date">{{item.date}}</view>
+        <view class="case-more">查看详情 ›</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{filteredList.length === 0}}">
+    <view class="empty-icon">📭</view>
+    <view class="empty-text">该分类下暂时没有案例</view>
+  </view>
+
+  <!-- 去识别入口 -->
+  <view class="go-identify card" bindtap="goIdentify">
+    <view class="go-identify-text">遇到可疑信息？点击这里立刻识别</view>
+    <view class="go-identify-btn">🔍 立即识别</view>
+  </view>
+
+  <!-- 案例详情弹窗 -->
+  <view class="mask" wx:if="{{showDetail}}" bindtap="closeDetail">
+    <view class="detail-popup" catchtap="stopBubble">
+      <view class="detail-title">{{detailCase.title}}</view>
+      <view class="detail-tags">
+        <view class="detail-category"># {{detailCase.category}}</view>
+        <view class="risk-level {{detailCase.riskLevel === 'high' ? 'risk-high' : (detailCase.riskLevel === 'medium' ? 'risk-medium' : 'risk-low')}}">{{detailRiskText}}</view>
+      </view>
+
+      <view class="detail-section">
+        <view class="detail-section-title">📋 事件经过</view>
+        <view class="detail-section-body">{{detailCase.description}}</view>
+        <view class="detail-section-body">{{detailCase.process}}</view>
+      </view>
+
+      <view class="detail-section">
+        <view class="detail-section-title">💸 损失情况</view>
+        <view class="detail-section-body loss">{{detailCase.loss}}</view>
+      </view>
+
+      <view class="detail-section">
+        <view class="detail-section-title">🛡️ 防骗要点</view>
+        <view class="tip-item" wx:for="{{detailCase.tips}}" wx:key="*this">✓ {{item}}</view>
+      </view>
+
+      <view class="detail-actions">
+        <button class="detail-btn share" bindtap="shareCase">📤 提醒家人</button>
+        <button class="detail-btn close" bindtap="closeDetail">我知道了</button>
+      </view>
+    </view>
+  </view>
+</view>

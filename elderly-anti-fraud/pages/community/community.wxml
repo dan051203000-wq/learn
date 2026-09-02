@@ -1,0 +1,76 @@
+<view class="container">
+  <!-- 顶部提示 + 热线 -->
+  <view class="hotline-bar">
+    <view class="hotline-text">拿不准？先问问大家，或拨打反诈专线</view>
+    <view class="hotline-btn" bindtap="callHotline">📞 96110</view>
+  </view>
+
+  <!-- 发布求助 -->
+  <view class="publish-card">
+    <textarea
+      class="publish-input"
+      placeholder="描述一下你遇到的可疑电话、短信或事情，大家帮你判断……"
+      value="{{content}}"
+      bindinput="onContentInput"
+      maxlength="500"
+    ></textarea>
+    <view class="publish-footer">
+      <view class="publish-hint">发布时请勿包含身份证号、银行卡号等隐私</view>
+      <button class="publish-btn" bindtap="publish" disabled="{{publishing}}">{{publishing ? '发布中…' : '发布求助'}}</button>
+    </view>
+  </view>
+
+  <!-- 帖子列表 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'latest' ? 'active' : ''}}" bindtap="switchTab" data-tab="latest">最新求助</view>
+    <view class="tab-item {{activeTab === 'hot' ? 'active' : ''}}" bindtap="switchTab" data-tab="hot">热门讨论</view>
+  </view>
+
+  <view class="post-list">
+    <view class="post-card" wx:for="{{displayPosts}}" wx:key="id">
+      <view class="post-header">
+        <view class="post-avatar">{{item.nickName[0]}}</view>
+        <view class="post-info">
+          <view class="post-name">{{item.nickName}}</view>
+          <view class="post-time">{{item.createTimeText}}</view>
+        </view>
+      </view>
+
+      <view class="post-content">{{item.content}}</view>
+
+      <!-- 回复列表 -->
+      <view class="reply-list" wx:if="{{item.replies.length > 0}}">
+        <view class="reply-item" wx:for="{{item.replies}}" wx:for-item="reply" wx:key="index">
+          <text class="reply-name">{{reply.nickName}}：</text>
+          <text class="reply-content">{{reply.content}}</text>
+        </view>
+      </view>
+
+      <view class="post-actions">
+        <view class="action-btn {{item.liked ? 'liked' : ''}}" bindtap="likePost" data-id="{{item.id || item._id}}">
+          👍 有用 {{item.likes || 0}}
+        </view>
+        <view class="action-btn" bindtap="startReply" data-id="{{item.id || item._id}}">💬 回复 {{item.replies.length}}</view>
+      </view>
+
+      <!-- 回复输入框 -->
+      <view class="reply-box" wx:if="{{replyToId === (item.id || item._id)}}">
+        <input
+          class="reply-input"
+          placeholder="说点什么，帮帮他/她……"
+          value="{{replyContent}}"
+          bindinput="onReplyInput"
+          confirm-type="send"
+          bindconfirm="submitReply"
+        />
+        <view class="reply-send" bindtap="submitReply">发送</view>
+        <view class="reply-cancel" bindtap="cancelReply">取消</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{posts.length === 0}}">
+    <view class="empty-icon">💬</view>
+    <view class="empty-text">还没有人求助，来发第一条吧</view>
+  </view>
+</view>

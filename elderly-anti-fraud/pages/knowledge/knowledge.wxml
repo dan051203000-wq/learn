@@ -1,0 +1,96 @@
+<view class="container">
+  <!-- 顶部提示 -->
+  <view class="page-tip">
+    <view class="tip-icon">📚</view>
+    <view class="tip-text">每天学一点，骗子的套路就骗不到你</view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <scroll-view class="category-bar" scroll-x>
+    <view
+      wx:for="{{categories}}"
+      wx:key="*this"
+      class="category-item {{currentCategory === item ? 'active' : ''}}"
+      bindtap="switchCategory"
+      data-category="{{item}}"
+    >{{item}}</view>
+  </scroll-view>
+
+  <!-- 小测试入口 -->
+  <view class="quiz-entry" bindtap="startQuiz">
+    <view class="quiz-entry-left">
+      <view class="quiz-entry-title">📝 防诈小测试</view>
+      <view class="quiz-entry-desc">4道题测测你的防骗能力</view>
+    </view>
+    <view class="quiz-entry-btn">开始答题</view>
+  </view>
+
+  <!-- 文章列表 -->
+  <view class="article-list">
+    <view class="article-card" wx:for="{{articleList}}" wx:key="id" bindtap="viewArticle" data-id="{{item.id}}">
+      <view class="article-icon">{{item.icon}}</view>
+      <view class="article-main">
+        <view class="article-title">{{item.title}}</view>
+        <view class="article-summary">{{item.summary}}</view>
+        <view class="article-meta">
+          <view class="article-category"># {{item.category}}</view>
+          <view class="article-read">{{item.readCount}} 人已学习</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 文章详情弹窗 -->
+  <view class="mask" wx:if="{{showArticle}}" bindtap="closeArticle">
+    <view class="detail-popup" catchtap="stopBubble">
+      <view class="detail-title">{{currentArticle.icon}} {{currentArticle.title}}</view>
+      <view class="detail-category"># {{currentArticle.category}}</view>
+      <view class="detail-line" wx:for="{{currentArticle.content}}" wx:key="*this">
+        <text class="detail-num">{{index + 1}}.</text>
+        <text class="detail-text">{{item}}</text>
+      </view>
+      <view class="detail-actions">
+        <button class="detail-btn primary" bindtap="goIdentify">去识别可疑信息</button>
+        <button class="detail-btn plain" bindtap="closeArticle">关闭</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 小测试弹窗 -->
+  <view class="mask" wx:if="{{showQuiz}}" bindtap="closeQuiz">
+    <view class="detail-popup quiz-popup" catchtap="stopBubble">
+      <!-- 答题中 -->
+      <block wx:if="{{!quizFinished}}">
+        <view class="quiz-progress">第 {{quizIndex + 1}} / {{quizTotal}} 题</view>
+        <view class="quiz-question-text">{{quizQuestion}}</view>
+        <view
+          wx:for="{{quizOptions}}"
+          wx:key="*this"
+          class="quiz-option {{quizAnswered && index === quizAnswer ? 'correct' : ''}} {{quizAnswered && quizSelected === index && index !== quizAnswer ? 'wrong' : ''}} {{!quizAnswered && quizSelected === index ? 'selected' : ''}}"
+          bindtap="selectOption"
+          data-index="{{index}}"
+        >
+          <text class="option-letter">{{['A','B','C'][index]}}</text>
+          <text class="option-text">{{item}}</text>
+        </view>
+        <view class="quiz-explain" wx:if="{{quizAnswered}}">💡 {{quizExplanation}}</view>
+        <button class="quiz-next-btn" wx:if="{{quizAnswered}}" bindtap="nextQuiz">
+          {{quizIndex === quizTotal - 1 ? '查看成绩' : '下一题'}}
+        </button>
+      </block>
+
+      <!-- 测试结果 -->
+      <block wx:if="{{quizFinished}}">
+        <view class="quiz-result-icon">{{quizScore === 4 ? '🏆' : (quizScore >= 3 ? '👍' : '💪')}}</view>
+        <view class="quiz-result-score">{{quizScore}} / {{quizTotal}}</view>
+        <view class="quiz-result-text">
+          {{quizScore === 4 ? '太棒了！您是防诈达人，骗子拿您没办法' : (quizScore >= 3 ? '不错的成绩！再接再厉，把学到的告诉家人' : '别灰心，多看看案例库和知识文章，再测一次')}}
+        </view>
+        <view class="quiz-actions">
+          <button class="detail-btn primary" bindtap="restartQuiz">再测一次</button>
+          <button class="detail-btn plain" bindtap="closeQuiz">关闭</button>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>

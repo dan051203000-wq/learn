@@ -1,0 +1,196 @@
+// 个人中心页面：用户信息、防诈成绩、识别历史、适老化设置
+Page({
+  data: {
+    nickName: '我',
+    fontLarge: false,
+    stats: {
+      identifyCount: 0,
+      reportCount: 0,
+      learnDays: 1
+    },
+    history: [],
+    settings: [
+      { key: 'fontLarge', title: '大字模式', desc: '放大页面文字，看得更清楚', icon: '🔍' }
+    ],
+    menuList: [
+      { title: '我的举报记录', icon: '📋', url: '/pages/report/report' },
+      { title: '家庭守护', icon: '👨‍👩‍👧‍👦', url: '/pages/family/family' },
+      { title: '防诈知识库', icon: '📚', url: '/pages/knowledge/knowledge' }
+    ]
+  },
+
+  onLoad() {
+    this.setData({
+      fontLarge: wx.getStorageSync('fontLarge') || false
+    });
+    this.loadUserInfo();
+  },
+
+  onShow() {
+    this.loadUserInfo();
+    this.loadHistory();
+    this.loadStats();
+  },
+
+  loadUserInfo() {
+    const savedName = wx.getStorageSync('nickName');
+    if (savedName) {
+      this.setData({ nickName: savedName });
+      return;
+    }
+    const app = getApp();
+    const name = app.globalData.userInfo && app.globalData.userInfo.nickName;
+    if (name) {
+      this.setData({ nickName: name });
+      wx.setStorageSync('nickName', name);
+    }
+  },
+
+  editName() {
+    wx.showModal({
+      title: '修改称呼',
+      editable: true,
+      placeholderText: '请输入您的称呼',
+      success: res => {
+        if (res.confirm && res.content && res.content.trim()) {
+          const name = res.content.trim().substring(0, 10);
+          wx.setStorageSync('nickName', name);
+          this.setData({ nickName: name });
+        }
+      }
+    });
+  },
+
+  loadStats() {
+    const userId = wx.getStorageSync('userId');
+    if (!userId) return;
+    const db = wx.cloud.database();
+
+    db.collection('identifyHistory').where({ userId }).count({
+      success: res => {
+        this.setData({ 'stats.identifyCount': res.total });
+      }
+    });
+
+    db.collection('reports').where({ userId }).count({
+      success: res => {
+        this.setData({ 'stats.reportCount': res.total });
+      }
+    });
+  },
+
+  loadHistory() {
+    const userId = wx.getStorageSync('userId');
+    if (!userId) return;
+
+    wx.cloud.database().collection('identifyHistory')
+      .where({ userId })
+      .orderBy('timestamp', 'desc')
+      .limit(20)
+      .get({
+        success: res => {
+          const history = res.data.map(item => ({
+            ...item,
+            timeText: this.formatTime(item.timestamp),
+            riskClass: this.riskClass(item.riskLevel)
+          }));
+          this.setData({ history });
+        },
+        fail: () => {
+          // 云环境未就绪时静默处理
+        }
+      });
+  },
+
+  riskClass(level) {
+    if (level === 'high') return 'risk-high';
+    if (level === 'medium') return 'risk-medium';
+    return 'risk-low';
+  },
+
+  formatTime(date) {
+    if (!date) return '';
+    const d = new Date(date);
+    const pad = n => (n < 10 ? '0' + n : '' + n);
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  },
+
+  /* ===== 大字模式 ===== */
+  toggleFont() {
+    const fontLarge = !this.data.fontLarge;
+    wx.setStorageSync('fontLarge', fontLarge);
+    this.setData({ fontLarge });
+    wx.showToast({
+      title: fontLarge ? '已开启大字模式' : '已关闭大字模式',
+      icon: 'none'
+    });
+  },
+
+  viewHistoryDetail(e) {
+    const { index } = e.currentTarget.dataset;
+    const item = this.data.history[Number(index)];
+    if (!item || !item.fullResult) return;
+
+    const lines = [
+      `识别内容：${item.text}`,
+      `风险等级：${item.riskLevelText || ''}`,
+      `诈骗手法：${(item.fullResult && item.fullResult.fraudMethod) || '未识别'}`
+    ].join('\n');
+
+    wx.showModal({
+      title: '识别记录详情',
+      content: lines,
+      showCancel: false
+    });
+  },
+
+  clearHistory() {
+    if (this.data.history.length === 0) {
+      wx.showToast({ title: '暂无记录', icon: 'none' });
+      return;
+    }
+    wx.showModal({
+      title: '清空识别历史',
+      content: '清空后将无法恢复，确定要清空吗？',
+      confirmText: '清空',
+      confirmColor: '#c62828',
+      success: res => {
+        if (res.confirm) {
+          // 逐条删除云端识别记录
+          const db = wx.cloud.database();
+          this.data.history.forEach(item => {
+            if (item._id) {
+              db.collection('identifyHistory').doc(item._id).remove({});
+            }
+          });
+          this.setData({ history: [] });
+          wx.showToast({ title: '已清空', icon: 'success' });
+        }
+      }
+    });
+  },
+
+  goMenu(e) {
+    const { url } = e.currentTarget.dataset;
+    wx.navigateTo({ url });
+  },
+
+  goIdentify() {
+    // identify 是 tabBar 页面，必须用 switchTab 跳转
+    wx.switchTab({
+      url: '/pages/identify/identify'
+    });
+  },
+
+  callHotline() {
+    wx.makePhoneCall({ phoneNumber: '96110' });
+  },
+
+  about() {
+    wx.showModal({
+      title: '关于我们',
+      content: '老年人防诈骗互助小程序，守护长辈钱袋子。如遇诈骗请拨打110或反诈专线96110。',
+      showCancel: false
+    });
+  }
+});

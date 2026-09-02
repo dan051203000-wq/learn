@@ -39,13 +39,15 @@ Page({
   },
 
   goIdentify() {
-    wx.navigateTo({
+    // identify 是 tabBar 页面，必须用 switchTab 跳转
+    wx.switchTab({
       url: '/pages/identify/identify'
     });
   },
 
   goCommunity() {
-    wx.navigateTo({
+    // community 是 tabBar 页面，必须用 switchTab 跳转
+    wx.switchTab({
       url: '/pages/community/community'
     });
   },

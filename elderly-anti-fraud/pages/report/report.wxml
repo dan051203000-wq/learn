@@ -1,0 +1,105 @@
+<view class="container">
+  <!-- 紧急提示 -->
+  <view class="urgent-bar">
+    <view class="urgent-text">🚨 如已被骗或正在被骗，请立即报警：110 / 反诈专线 96110</view>
+    <view class="urgent-actions">
+      <view class="urgent-call" bindtap="callPhone" data-phone="110">拨打 110</view>
+      <view class="urgent-call anti" bindtap="callPhone" data-phone="96110">拨打 96110</view>
+    </view>
+  </view>
+
+  <!-- 举报表单 -->
+  <view class="form-card">
+    <view class="form-title">📝 提交诈骗线索</view>
+
+    <!-- 诈骗类型 -->
+    <view class="form-item">
+      <view class="form-label">诈骗类型 <text class="required">*</text></view>
+      <picker mode="selector" range="{{fraudTypes}}" bindchange="pickType">
+        <view class="picker-value {{typeIndex === -1 ? 'placeholder' : ''}}">{{typeText}} ▾</view>
+      </picker>
+    </view>
+
+    <!-- 诈骗电话 -->
+    <view class="form-item">
+      <view class="form-label">诈骗电话 / 短信号码</view>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="例如：0085xxxxxxx"
+        value="{{fraudPhone}}"
+        bindinput="onPhoneInput"
+      />
+    </view>
+
+    <!-- 诈骗账号 -->
+    <view class="form-item">
+      <view class="form-label">诈骗账号 / 网址</view>
+      <input
+        class="form-input"
+        type="text"
+        placeholder="银行卡号、微信号或网址（选填）"
+        value="{{fraudAccount}}"
+        bindinput="onAccountInput"
+      />
+    </view>
+
+    <!-- 事情经过 -->
+    <view class="form-item">
+      <view class="form-label">事情经过 <text class="required">*</text></view>
+      <textarea
+        class="form-textarea"
+        placeholder="简单描述发生了什么、对方说了什么、有没有损失……"
+        value="{{description}}"
+        bindinput="onDescInput"
+        maxlength="1000"
+      ></textarea>
+    </view>
+
+    <!-- 证据图片 -->
+    <view class="form-item">
+      <view class="form-label">证据截图（最多3张）</view>
+      <view class="image-list">
+        <view class="image-item" wx:for="{{images}}" wx:key="*this">
+          <image class="preview" src="{{item}}" mode="aspectFill"></image>
+          <view class="image-remove" bindtap="removeImage" data-index="{{index}}">✕</view>
+        </view>
+        <view class="image-add" wx:if="{{images.length < 3}}" bindtap="chooseImage">＋</view>
+      </view>
+    </view>
+
+    <button class="submit-btn" bindtap="submitReport" disabled="{{submitting}}">
+      {{submitting ? '提交中…' : '提交举报'}}
+    </button>
+  </view>
+
+  <!-- 我的举报记录 -->
+  <view class="records-card" wx:if="{{myReports.length > 0}}">
+    <view class="form-title">📋 我的举报记录</view>
+    <view class="record-item" wx:for="{{myReports}}" wx:key="_id">
+      <view class="record-top">
+        <view class="record-type">{{item.fraudType}}</view>
+        <view class="record-status">{{item.status}}</view>
+      </view>
+      <view class="record-desc">{{item.description || item.fraudPhone}}</view>
+      <view class="record-time">{{item.timeText}}</view>
+    </view>
+  </view>
+
+  <!-- 官方举报渠道 -->
+  <view class="channel-card">
+    <view class="form-title">🏛️ 官方举报渠道</view>
+    <view class="channel-item" bindtap="callPhone" data-phone="96110">
+      <view class="channel-name">反诈专线</view>
+      <view class="channel-value">96110</view>
+    </view>
+    <view class="channel-item" bindtap="callPhone" data-phone="110">
+      <view class="channel-name">报警电话</view>
+      <view class="channel-value">110</view>
+    </view>
+    <view class="channel-item" bindtap="copyUrl">
+      <view class="channel-name">网络不良信息举报</view>
+      <view class="channel-value">12321.cn（复制网址）</view>
+    </view>
+  </view>
+</view>

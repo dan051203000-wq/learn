@@ -1,0 +1,9 @@
+{
+  "name": "identifyFraud",
+  "version": "1.0.0",
+  "description": "老年人防诈骗小程序 - 诈骗识别云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}
