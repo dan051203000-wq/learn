@@ -81,26 +81,26 @@ Page({
   },
 
   loadPosts(callback) {
-    wx.cloud.database().collection('communityPosts')
-      .orderBy('createTime', 'desc')
-      .limit(20)
-      .get({
-        success: res => {
-          if (res.data && res.data.length > 0) {
-            this.setData({ posts: this.decorate(res.data) });
-          } else {
-            this.setData({ posts: this.decorate(demoPosts) });
-          }
-          this.updateDisplayPosts();
-        },
-        fail: () => {
+    // 通过 dataService 云函数读取帖子（管理员权限，不受集合权限限制）
+    wx.cloud.callFunction({
+      name: 'dataService',
+      data: { action: 'getPosts' },
+      success: res => {
+        if (res.result && res.result.success && res.result.data.length > 0) {
+          this.setData({ posts: this.decorate(res.result.data) });
+        } else {
           this.setData({ posts: this.decorate(demoPosts) });
-          this.updateDisplayPosts();
-        },
-        complete: () => {
-          if (callback) callback();
         }
-      });
+        this.updateDisplayPosts();
+      },
+      fail: () => {
+        this.setData({ posts: this.decorate(demoPosts) });
+        this.updateDisplayPosts();
+      },
+      complete: () => {
+        if (callback) callback();
+      }
+    });
   },
 
   decorate(list) {
@@ -150,22 +150,25 @@ Page({
     this.setData({ publishing: true });
 
     const userId = wx.getStorageSync('userId');
-    const db = wx.cloud.database();
 
-    db.collection('communityPosts').add({
+    wx.cloud.callFunction({
+      name: 'dataService',
       data: {
+        action: 'createPost',
         userId,
         nickName: this.data.nickName,
-        content,
-        replies: [],
-        likes: 0,
-        createTime: db.serverDate()
+        content
       },
-      success: () => {
-        this.setData({ content: '', publishing: false });
-        wx.showToast({ title: '发布成功', icon: 'success' });
-        this.setData({ activeTab: 'latest' });
-        this.loadPosts();
+      success: res => {
+        if (res.result && res.result.success) {
+          this.setData({ content: '', publishing: false });
+          wx.showToast({ title: '发布成功', icon: 'success' });
+          this.setData({ activeTab: 'latest' });
+          this.loadPosts();
+        } else {
+          this.setData({ publishing: false });
+          wx.showToast({ title: '发布失败，请重试', icon: 'none' });
+        }
       },
       fail: () => {
         this.setData({ publishing: false });
@@ -189,25 +192,39 @@ Page({
       content: replyContent
     });
 
-    wx.cloud.database().collection('communityPosts').doc(postId).update({
-      data: { replies },
-      success: () => {
-        this.cancelReply();
-        wx.showToast({ title: '回复成功', icon: 'success' });
-        this.loadPosts();
+    wx.cloud.callFunction({
+      name: 'dataService',
+      data: {
+        action: 'replyPost',
+        postId,
+        nickName: this.data.nickName,
+        content: replyContent
+      },
+      success: res => {
+        if (res.result && res.result.success) {
+          this.cancelReply();
+          wx.showToast({ title: '回复成功', icon: 'success' });
+          this.loadPosts();
+        } else {
+          this.localReply(postId, replies);
+        }
       },
       fail: () => {
         // 云端失败时本地展示（演示数据帖子无法写入云端）
-        const posts = this.data.posts.map(p => {
-          if ((p.id || p._id) === postId) {
-            return { ...p, replies };
-          }
-          return p;
-        });
-        this.setData({ posts, replyToId: '', replyContent: '' });
-        wx.showToast({ title: '回复成功（本地展示）', icon: 'none' });
+        this.localReply(postId, replies);
       }
     });
+  },
+
+  localReply(postId, replies) {
+    const posts = this.data.posts.map(p => {
+      if ((p.id || p._id) === postId) {
+        return { ...p, replies };
+      }
+      return p;
+    });
+    this.setData({ posts, replyToId: '', replyContent: '' });
+    wx.showToast({ title: '回复成功（本地展示）', icon: 'none' });
   },
 
   likePost(e) {
@@ -236,8 +253,13 @@ Page({
     this.updateDisplayPosts();
 
     // 同步到云端（失败静默，本地点赞已生效）
-    wx.cloud.database().collection('communityPosts').doc(id).update({
-      data: { likes: newLikes }
+    wx.cloud.callFunction({
+      name: 'dataService',
+      data: {
+        action: 'likePost',
+        postId: id,
+        delta: isLike ? 1 : -1
+      }
     });
   },
 

@@ -40,7 +40,9 @@ elderly-anti-fraud/
 │   ├── report/                    # 举报
 │   └── profile/                   # 个人中心
 ├── cloudfunctions/
-│   └── identifyFraud/             # 诈骗识别云函数（含 package.json）
+│   ├── identifyFraud/            # 诈骗识别云函数（含 package.json）
+│   ├── initDB/                   # 一键初始化：创建集合并写入示例数据
+│   └── dataService/              # 数据统一代理云函数（所有数据读写走这里）
 ├── assets/icons/                  # tabBar 图标（8 个 PNG）
 ├── tools/gen_icons.py             # 图标生成脚本（Pillow）
 ├── app.js                         # 应用入口
@@ -99,7 +101,9 @@ cd elderly-anti-fraud
 - `fraudCases`、`communityPosts`、`identifyHistory`、`alerts`、`reports`
 
 ### 5. 上传云函数
-右键 `cloudfunctions/identifyFraud` → 选择"上传并部署：云端安装依赖"。
+右键 `cloudfunctions/identifyFraud`、`cloudfunctions/initDB`、`cloudfunctions/dataService` → 选择"上传并部署：云端安装依赖"（三个都要上传）。
+
+> **架构说明**：小程序端所有数据读写均通过 `dataService` 云函数完成。云函数以管理员权限访问数据库，不受集合权限设置影响，因此**无需手动配置数据库权限**，数据也无法被客户端直接篡改，更安全。
 
 ### 6. 重新生成 tabBar 图标（如有调整）
 ```bash

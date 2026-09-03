@@ -115,31 +115,35 @@ Page({
     });
 
     Promise.all(uploadTasks).then(imageFileIds => {
-      const db = wx.cloud.database();
-      db.collection('reports').add({
+      wx.cloud.callFunction({
+        name: 'dataService',
         data: {
+          action: 'addReport',
           userId: wx.getStorageSync('userId'),
           fraudType: this.data.typeText,
           fraudPhone: this.data.fraudPhone.trim(),
           fraudAccount: this.data.fraudAccount.trim(),
           description: this.data.description.trim(),
-          imageFileIds,
-          status: '已提交',
-          createTime: db.serverDate()
+          imageFileIds
         },
-        success: () => {
+        success: res => {
           wx.hideLoading();
-          this.setData({
-            submitting: false,
-            typeIndex: -1,
-            typeText: '请选择诈骗类型',
-            fraudPhone: '',
-            fraudAccount: '',
-            description: '',
-            images: []
-          });
-          wx.showToast({ title: '举报提交成功', icon: 'success' });
-          this.loadMyReports();
+          if (res.result && res.result.success) {
+            this.setData({
+              submitting: false,
+              typeIndex: -1,
+              typeText: '请选择诈骗类型',
+              fraudPhone: '',
+              fraudAccount: '',
+              description: '',
+              images: []
+            });
+            wx.showToast({ title: '举报提交成功', icon: 'success' });
+            this.loadMyReports();
+          } else {
+            this.setData({ submitting: false });
+            wx.showToast({ title: '提交失败，可拨打96110举报', icon: 'none' });
+          }
         },
         fail: () => {
           wx.hideLoading();
@@ -155,22 +159,22 @@ Page({
     const userId = wx.getStorageSync('userId');
     if (!userId) return;
 
-    wx.cloud.database().collection('reports')
-      .where({ userId })
-      .orderBy('createTime', 'desc')
-      .limit(20)
-      .get({
-        success: res => {
-          const myReports = res.data.map(item => ({
+    wx.cloud.callFunction({
+      name: 'dataService',
+      data: { action: 'getReports', userId },
+      success: res => {
+        if (res.result && res.result.success) {
+          const myReports = res.result.data.map(item => ({
             ...item,
             timeText: this.formatTime(item.createTime)
           }));
           this.setData({ myReports });
-        },
-        fail: () => {
-          // 云环境未就绪时静默处理
         }
-      });
+      },
+      fail: () => {
+        // 云环境未就绪时静默处理
+      }
+    });
   },
 
   formatTime(date) {

@@ -119,30 +119,26 @@ Page({
   },
 
   loadCases() {
-    // 优先从云数据库加载案例，无数据时使用内置示例
-    wx.cloud.database().collection('fraudCases')
-      .orderBy('date', 'desc')
-      .limit(50)
-      .get({
-        success: res => {
-          if (res.data && res.data.length > 0) {
-            const list = this.decorate(res.data);
-            this.setData({
-              caseList: list,
-              filteredList: this.filterBy(this.data.currentCategory, list),
-              fromCloud: true
-            });
-          } else {
-            const list = this.decorate(demoCases);
-            this.setData({ caseList: list, filteredList: list, fromCloud: false });
-          }
-        },
-        fail: () => {
-          // 云环境未就绪时使用本地示例
-          const list = this.decorate(demoCases);
-          this.setData({ caseList: list, filteredList: list, fromCloud: false });
-        }
-      });
+    // 通过 dataService 云函数加载案例（管理员权限读取），无数据时使用内置示例
+    wx.cloud.callFunction({
+      name: 'dataService',
+      data: { action: 'getCases' },
+      success: res => {
+        const list = (res.result && res.result.success && res.result.data.length > 0)
+          ? this.decorate(res.result.data)
+          : this.decorate(demoCases);
+        this.setData({
+          caseList: list,
+          filteredList: this.filterBy(this.data.currentCategory, list),
+          fromCloud: !!(res.result && res.result.success && res.result.data.length > 0)
+        });
+      },
+      fail: () => {
+        // 云环境未就绪时使用本地示例
+        const list = this.decorate(demoCases);
+        this.setData({ caseList: list, filteredList: list, fromCloud: false });
+      }
+    });
   },
 
   decorate(list) {

@@ -105,15 +105,13 @@ Page({
   },
 
   saveToHistory(text, result) {
-    wx.cloud.database().collection('identifyHistory').add({
+    wx.cloud.callFunction({
+      name: 'dataService',
       data: {
+        action: 'saveHistory',
         userId: wx.getStorageSync('userId'),
         text: text.substring(0, 50),
-        riskLevel: result.riskLevel,
-        riskLevelText: result.riskLevelText,
-        fullResult: result,
-        timestamp: new Date(),
-        createTime: wx.cloud.database().serverDate()
+        result
       },
       success: () => {
         this.loadHistory();
@@ -125,19 +123,19 @@ Page({
     const userId = wx.getStorageSync('userId');
     if (!userId) return;
 
-    wx.cloud.database().collection('identifyHistory')
-      .where({ userId })
-      .orderBy('timestamp', 'desc')
-      .limit(10)
-      .get({
-        success: res => {
-          const history = res.data.map(item => ({
+    wx.cloud.callFunction({
+      name: 'dataService',
+      data: { action: 'getHistory', userId, limit: 10 },
+      success: res => {
+        if (res.result && res.result.success) {
+          const history = res.result.data.map(item => ({
             ...item,
             time: new Date(item.timestamp).toLocaleString()
           }));
           this.setData({ history });
         }
-      });
+      }
+    });
   },
 
   reportFraud() {

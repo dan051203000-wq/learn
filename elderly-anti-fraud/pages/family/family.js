@@ -138,29 +138,31 @@ Page({
     });
   },
 
-  /* ===== 守护动态（示例数据，后续接入识别历史联动） ===== */
+  /* ===== 守护动态（最近识别记录联动） ===== */
   loadEvents() {
-    const userId = wx.getStorageSync('userId');
-    wx.cloud.database().collection('identifyHistory')
-      .orderBy('timestamp', 'desc')
-      .limit(5)
-      .get({
-        success: res => {
-          const recentEvents = res.data.map(item => ({
+    wx.cloud.callFunction({
+      name: 'dataService',
+      data: { action: 'getRecentIdentify' },
+      success: res => {
+        if (res.result && res.result.success && res.result.data.length > 0) {
+          const recentEvents = res.result.data.map(item => ({
             nickName: '家人',
             action: '识别了一条可疑信息',
             result: item.riskLevelText || '',
             time: this.formatTime(item.timestamp)
           }));
           this.setData({ recentEvents });
-        },
-        fail: () => {
-          // 云端不可用时展示本地说明
-          this.setData({
-            recentEvents: []
-          });
+        } else {
+          this.setData({ recentEvents: [] });
         }
-      });
+      },
+      fail: () => {
+        // 云端不可用时展示本地说明
+        this.setData({
+          recentEvents: []
+        });
+      }
+    });
   },
 
   formatTime(date) {

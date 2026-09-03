@@ -64,17 +64,17 @@ Page({
   loadStats() {
     const userId = wx.getStorageSync('userId');
     if (!userId) return;
-    const db = wx.cloud.database();
 
-    db.collection('identifyHistory').where({ userId }).count({
+    wx.cloud.callFunction({
+      name: 'dataService',
+      data: { action: 'getStats', userId },
       success: res => {
-        this.setData({ 'stats.identifyCount': res.total });
-      }
-    });
-
-    db.collection('reports').where({ userId }).count({
-      success: res => {
-        this.setData({ 'stats.reportCount': res.total });
+        if (res.result && res.result.success) {
+          this.setData({
+            'stats.identifyCount': res.result.identifyCount || 0,
+            'stats.reportCount': res.result.reportCount || 0
+          });
+        }
       }
     });
   },
@@ -83,23 +83,23 @@ Page({
     const userId = wx.getStorageSync('userId');
     if (!userId) return;
 
-    wx.cloud.database().collection('identifyHistory')
-      .where({ userId })
-      .orderBy('timestamp', 'desc')
-      .limit(20)
-      .get({
-        success: res => {
-          const history = res.data.map(item => ({
+    wx.cloud.callFunction({
+      name: 'dataService',
+      data: { action: 'getHistory', userId, limit: 20 },
+      success: res => {
+        if (res.result && res.result.success) {
+          const history = res.result.data.map(item => ({
             ...item,
             timeText: this.formatTime(item.timestamp),
             riskClass: this.riskClass(item.riskLevel)
           }));
           this.setData({ history });
-        },
-        fail: () => {
-          // 云环境未就绪时静默处理
         }
-      });
+      },
+      fail: () => {
+        // 云环境未就绪时静默处理
+      }
+    });
   },
 
   riskClass(level) {
@@ -156,15 +156,22 @@ Page({
       confirmColor: '#c62828',
       success: res => {
         if (res.confirm) {
-          // 逐条删除云端识别记录
-          const db = wx.cloud.database();
-          this.data.history.forEach(item => {
-            if (item._id) {
-              db.collection('identifyHistory').doc(item._id).remove({});
+          // 通过云函数批量删除该用户的识别记录
+          wx.cloud.callFunction({
+            name: 'dataService',
+            data: { action: 'clearHistory', userId: wx.getStorageSync('userId') },
+            success: r => {
+              if (r.result && r.result.success) {
+                this.setData({ history: [] });
+                wx.showToast({ title: '已清空', icon: 'success' });
+              } else {
+                wx.showToast({ title: '清空失败，请重试', icon: 'none' });
+              }
+            },
+            fail: () => {
+              wx.showToast({ title: '清空失败，请重试', icon: 'none' });
             }
           });
-          this.setData({ history: [] });
-          wx.showToast({ title: '已清空', icon: 'success' });
         }
       }
     });

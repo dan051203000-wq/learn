@@ -22,20 +22,21 @@ Page({
   },
 
   loadData() {
-    // 从云数据库加载最新警报
-    wx.cloud.database().collection('alerts')
-      .orderBy('date', 'desc')
-      .limit(3)
-      .get({
-        success: res => {
+    // 通过 dataService 云函数加载最新警报（管理员权限读取，不受集合权限限制）
+    wx.cloud.callFunction({
+      name: 'dataService',
+      data: { action: 'getAlerts' },
+      success: res => {
+        if (res.result && res.result.success && res.result.data.length > 0) {
           this.setData({
-            alerts: res.data
+            alerts: res.result.data
           });
-        },
-        fail: err => {
-          console.error('加载警报失败', err);
         }
-      });
+      },
+      fail: err => {
+        console.error('加载警报失败', err);
+      }
+    });
   },
 
   goIdentify() {
