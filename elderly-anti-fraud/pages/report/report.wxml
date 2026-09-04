@@ -86,9 +86,10 @@
     </view>
   </view>
 
-  <!-- 官方举报渠道 -->
+  <!-- 其他举报渠道（外线电话/网站，非本工具能力） -->
   <view class="channel-card">
-    <view class="form-title">🏛️ 官方举报渠道</view>
+    <view class="form-title">📞 还可以通过这些渠道举报</view>
+    <view class="channel-tip">遇到紧急被骗或大额损失，请优先拨打 110 或到派出所报案，本应用只做线索记录。</view>
     <view class="channel-item" bindtap="callPhone" data-phone="96110">
       <view class="channel-name">反诈专线</view>
       <view class="channel-value">96110</view>

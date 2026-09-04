@@ -386,6 +386,120 @@
   margin-top: 8rpx;
 }
 
+/* ===== 一键呼叫子女 ===== */
+.call-card {
+  background: linear-gradient(135deg, #fff8e1, #ffecb3);
+  border-radius: 24rpx;
+  margin: 0 24rpx 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(255, 167, 38, 0.15);
+  border-left: 8rpx solid #ffa726;
+}
+
+.call-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 12rpx;
+  display: flex;
+  align-items: center;
+}
+
+.call-desc {
+  font-size: 26rpx;
+  color: #777;
+  margin-bottom: 24rpx;
+  line-height: 1.6;
+}
+
+.call-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.call-item {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.call-item:active {
+  transform: scale(0.98);
+  background-color: #fff8e1;
+}
+
+.call-avatar {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+  width: 72rpx;
+  height: 72rpx;
+  background: linear-gradient(135deg, #ffe0b2, #ffcc80);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.call-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.call-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 4rpx;
+}
+
+.call-phone {
+  font-size: 26rpx;
+  color: #666;
+  letter-spacing: 1rpx;
+}
+
+.call-btn-text {
+  background: linear-gradient(135deg, #ffa726, #f57c00);
+  color: white;
+  font-size: 28rpx;
+  font-weight: bold;
+  padding: 12rpx 28rpx;
+  border-radius: 32rpx;
+  box-shadow: 0 2rpx 6rpx rgba(245, 124, 0, 0.3);
+}
+
+.call-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: #e65100;
+  font-size: 30rpx;
+  font-weight: bold;
+  padding: 24rpx;
+  border-radius: 20rpx;
+  border: 4rpx dashed #ffa726;
+  margin-top: 16rpx;
+}
+
+.call-add-icon {
+  font-size: 40rpx;
+  margin-right: 12rpx;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.call-add-text {
+  letter-spacing: 2rpx;
+}
+
 /* ===== 底部 96110 ===== */
 .hotline-card {
   display: flex;

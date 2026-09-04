@@ -1,0 +1,247 @@
+/* ========== 关于页：合规说明 / 隐私摘要 / 免责声明 ========== */
+.container {
+  padding: 0 0 80rpx;
+  background-color: #f4f6fa;
+  min-height: 100vh;
+}
+
+/* ===== 顶部 Hero ===== */
+.hero {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 50%, #1565C0 100%);
+  color: white;
+  padding: 60rpx 32rpx 80rpx;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80rpx;
+  right: -80rpx;
+  width: 240rpx;
+  height: 240rpx;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+}
+
+.hero-icon {
+  font-size: 100rpx;
+  margin-bottom: 16rpx;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  letter-spacing: 4rpx;
+  margin-bottom: 12rpx;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+}
+
+.hero-sub {
+  font-size: 28rpx;
+  opacity: 0.9;
+  position: relative;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.18);
+  display: inline-block;
+  padding: 8rpx 24rpx;
+  border-radius: 24rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+/* ===== 通用卡片 ===== */
+.card {
+  background-color: white;
+  border-radius: 24rpx;
+  margin: -40rpx 24rpx 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 2;
+}
+
+.card-warning {
+  background: linear-gradient(135deg, #fff8e1, #ffecb3);
+  border-left: 8rpx solid #ffa726;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 20rpx;
+  line-height: 1.4;
+}
+
+.card-title-bar {
+  width: 8rpx;
+  height: 36rpx;
+  background: linear-gradient(180deg, #2196F3, #1976D2);
+  border-radius: 4rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.card-title-bar.warn {
+  background: linear-gradient(180deg, #ffa726, #f57c00);
+}
+
+.card-body {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.7;
+}
+
+.text-row {
+  margin-bottom: 16rpx;
+  font-size: 28rpx;
+  line-height: 1.7;
+}
+
+.text-row.small {
+  font-size: 26rpx;
+  color: #555;
+}
+
+.text-row.highlight {
+  background-color: #fff3e0;
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  margin: 16rpx 0;
+  border-left: 6rpx solid #ffa726;
+}
+
+.bullet {
+  font-size: 28rpx;
+  color: #555;
+  line-height: 1.8;
+  padding-left: 12rpx;
+}
+
+.label {
+  font-weight: bold;
+  color: #1565C0;
+}
+
+.label-bold {
+  font-weight: bold;
+  color: #c62828;
+  font-size: 30rpx;
+}
+
+.warn-row {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #c62828;
+  text-align: center;
+  margin: 8rpx 0;
+  letter-spacing: 4rpx;
+}
+
+.hotline {
+  color: #c62828;
+  font-weight: bold;
+  font-size: 36rpx;
+  margin: 0 6rpx;
+}
+
+.bold {
+  font-weight: bold;
+  color: #c62828;
+}
+
+/* ===== 技术说明 KV ===== */
+.tech .kv {
+  display: flex;
+  font-size: 28rpx;
+  line-height: 1.7;
+  margin-bottom: 12rpx;
+  padding: 8rpx 0;
+  border-bottom: 2rpx dashed #f0f2f5;
+}
+
+.tech .kv:last-child {
+  border-bottom: none;
+}
+
+.tech .k {
+  color: #1565C0;
+  font-weight: 500;
+  width: 140rpx;
+  flex-shrink: 0;
+}
+
+.tech .v {
+  flex: 1;
+  color: #333;
+}
+
+/* ===== 免责声明 ===== */
+.disclaimer .text-row {
+  padding-left: 28rpx;
+  position: relative;
+  margin-bottom: 14rpx;
+}
+
+.disclaimer .text-row::before {
+  content: counter(item);
+  counter-increment: item;
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #1565C0;
+  font-weight: bold;
+  font-size: 24rpx;
+}
+
+.disclaimer {
+  counter-reset: item;
+}
+
+/* ===== 底部 ===== */
+.footer {
+  text-align: center;
+  padding: 40rpx 32rpx 20rpx;
+  color: #999;
+}
+
+.footer-version {
+  font-size: 26rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.footer-tip {
+  font-size: 24rpx;
+  color: #bbb;
+}
+
+.footer-blank {
+  height: 40rpx;
+}
+
+/* ===== 大字模式（适老化联动） ===== */
+.font-large .card-title {
+  font-size: 38rpx;
+}
+
+.font-large .text-row,
+.font-large .bullet {
+  font-size: 32rpx;
+}
+
+.font-large .text-row.small {
+  font-size: 30rpx;
+}
+
+.font-large .tech .kv {
+  font-size: 30rpx;
+}

@@ -193,11 +193,15 @@ Page({
     wx.makePhoneCall({ phoneNumber: '96110' });
   },
 
-  about() {
-    wx.showModal({
-      title: '关于我们',
-      content: '老年人防诈骗互助小程序，守护长辈钱袋子。如遇诈骗请拨打110或反诈专线96110。',
-      showCancel: false
+  openAbout() {
+    wx.navigateTo({
+      url: '/pages/about/about'
+    });
+  },
+
+  openPrivacy() {
+    wx.navigateTo({
+      url: '/pages/about/about?tab=privacy'
     });
   }
 });

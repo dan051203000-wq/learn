@@ -25,7 +25,7 @@
     </view>
   </block>
 
-  <!-- 我是长辈：展示守护码 -->
+  <!-- 我是长辈：展示守护码 + 一键呼叫子女 -->
   <block wx:if="{{role === 'elder'}}">
     <view class="code-card">
       <view class="code-title">我的守护码</view>
@@ -35,6 +35,35 @@
         <button class="code-btn primary" bindtap="copyCode">📋 复制守护码</button>
         <button class="code-btn plain" bindtap="refreshCode">🔄 更换</button>
       </view>
+    </view>
+
+    <!-- 一键呼叫子女（紧急联系） -->
+    <view class="call-card">
+      <view class="call-title">📞 一键呼叫子女</view>
+      <view class="call-desc" wx:if="{{!childContacts.length}}">还没设置子女电话，长按下方按钮添加</view>
+      <view class="call-list" wx:if="{{childContacts.length}}">
+        <view
+          class="call-item"
+          wx:for="{{childContacts}}"
+          wx:key="phone"
+          bindtap="callChild"
+          data-phone="{{item.phone}}"
+          data-name="{{item.name}}"
+          bindlongpress="editChild"
+          data-index="{{index}}"
+        >
+          <view class="call-avatar">👨‍👩‍👧</view>
+          <view class="call-info">
+            <view class="call-name">{{item.name}}</view>
+            <view class="call-phone">{{item.phone}}</view>
+          </view>
+          <view class="call-btn-text">呼叫</view>
+        </view>
+      </view>
+      <button class="call-add-btn" bindtap="addChild">
+        <view class="call-add-icon">+</view>
+        <view class="call-add-text">{{childContacts.length ? '再添加一位' : '添加子女电话'}}</view>
+      </button>
     </view>
 
     <view class="switch-role" bindtap="switchRole">切换角色 ›</view>

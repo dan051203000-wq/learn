@@ -1,0 +1,105 @@
+<view class="container {{fontLarge ? 'font-large' : ''}}">
+  <!-- 顶部标题区 -->
+  <view class="hero">
+    <view class="hero-icon">🛡️</view>
+    <view class="hero-title">防诈骗互助</view>
+    <view class="hero-sub">社区辅助工具 · 非官方应用</view>
+  </view>
+
+  <!-- 定位说明（核心合规区） -->
+  <view class="card">
+    <view class="card-title">
+      <view class="card-title-bar"></view>
+      📌 本工具是什么
+    </view>
+    <view class="card-body">
+      <view class="text-row">✅ 社区互助型辅助工具：帮您识别可疑信息、学习防诈知识、联系家人守护。</view>
+      <view class="text-row">❌ 不是国家反诈中心、公安机关或任何官方机构的官方渠道。</view>
+      <view class="text-row">❌ 不能代替报警、不能直接对接反诈中心、不能保证识别结果 100% 准确。</view>
+      <view class="text-row highlight">🚨 遇到以下情况请第一时间拨打 <text class="hotline">110</text> 或 <text class="hotline">96110</text>：</view>
+      <view class="bullet">• 已经向陌生人转账或泄露验证码</view>
+      <view class="bullet">• 被威胁恐吓要求保密、独自处理</view>
+      <view class="bullet">• 对方自称公检法要求"配合调查"</view>
+    </view>
+  </view>
+
+  <!-- 数据与隐私（用户最关心） -->
+  <view class="card">
+    <view class="card-title">
+      <view class="card-title-bar"></view>
+      🔒 我们怎么保管您的数据
+    </view>
+    <view class="card-body">
+      <view class="text-row"><text class="label">匿名存储：</text>本工具不要求您填写真实姓名、身份证号、手机号。系统会自动生成一个匿名 ID（字母数字串）来保存您的识别记录。</view>
+      <view class="text-row"><text class="label">家庭守护码：</text>如需家人远程守护，您可以选择设置一个 6 位数字的"守护码"和 1 个称呼（例如"女儿"）。这些信息只保存在本机和您绑定的家人之间。</view>
+      <view class="text-row"><text class="label">本地优先：</text>所有识别记录、举报记录、家庭绑定优先保存在您本机；只有您主动提交的内容才会同步到云端。</view>
+      <view class="text-row"><text class="label">权限隔离：</text>数据库采用"仅创建者可读写"原则，您看不到其他用户的数据，其他用户也看不到您的。</view>
+      <view class="text-row"><text class="label">不会做的事：</text>不上传通讯录、不读取短信、不获取位置、不做广告画像、不向第三方共享数据。</view>
+    </view>
+  </view>
+
+  <!-- 老人特别提醒 -->
+  <view class="card card-warning">
+    <view class="card-title">
+      <view class="card-title-bar warn"></view>
+      👴 给长辈的话
+    </view>
+    <view class="card-body">
+      <view class="text-row"><text class="label-bold">记住"三不三多"：</text></view>
+      <view class="text-row warn-row">不轻信 · 不透露 · 不转账</view>
+      <view class="text-row warn-row">多核实 · 多商量 · 多问问</view>
+      <view class="text-row"><text class="label-bold">拿不准就问：</text>打 <text class="hotline">96110</text> 找反诈中心咨询；打给子女、社区民警、银行客服核实。</view>
+      <view class="text-row"><text class="label-bold">验证码 = 密码：</text>任何人要您的短信验证码，一律是骗子。</view>
+    </view>
+  </view>
+
+  <!-- 技术说明（给子女看） -->
+  <view class="card">
+    <view class="card-title">
+      <view class="card-title-bar"></view>
+      ⚙️ 技术说明
+    </view>
+    <view class="card-body tech">
+      <view class="kv"><text class="k">类型：</text><text class="v">微信小程序 + 微信云开发</text></view>
+      <view class="kv"><text class="k">数据：</text><text class="v">数据代理云函数（管理员权限），不向客户端开放数据库直连</text></view>
+      <view class="kv"><text class="k">存储：</text><text class="v">识别记录 / 举报 / 帖子 / 案例 / 知识库 / 警报</text></view>
+      <view class="kv"><text class="k">语音：</text><text class="v">识别结果可一键朗读（微信官方同声传译插件）</text></view>
+      <view class="kv"><text class="k">分类：</text><text class="v">本工具属于"工具 → 信息查询"类目，未涉及金融、安全类受限类目</text></view>
+    </view>
+  </view>
+
+  <!-- 免责声明 -->
+  <view class="card">
+    <view class="card-title">
+      <view class="card-title-bar"></view>
+      📋 免责声明
+    </view>
+    <view class="card-body disclaimer">
+      <view class="text-row small">1. 本工具提供的识别结果基于关键词匹配，仅供参考，<text class="bold">不能作为判定诈骗的唯一依据</text>。</view>
+      <view class="text-row small">2. 因使用本工具而做出任何决策（包括但不限于转账、付款、透露个人信息）所产生的后果，由使用者本人承担。</view>
+      <view class="text-row small">3. 本工具不对识别结果的准确性、完整性、时效性作任何明示或暗示的保证。</view>
+      <view class="text-row small">4. 案例、知识库内容来自公开资料整理，仅用于公益宣传教育，不构成任何专业建议。</view>
+      <view class="text-row small">5. 紧急被骗请立即拨打 110 报警或到就近派出所报案，本应用内"举报"功能仅用于线索记录，不构成正式报案。</view>
+    </view>
+  </view>
+
+  <!-- 联系与反馈 -->
+  <view class="card">
+    <view class="card-title">
+      <view class="card-title-bar"></view>
+      💬 反馈与帮助
+    </view>
+    <view class="card-body">
+      <view class="text-row">如发现功能问题、识别错误或希望增加新功能，请通过小程序"我的 → 关于"提交反馈。</view>
+      <view class="text-row">紧急情况请直接拨打 110 或 96110。</view>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="footer">
+    <view class="footer-version">防诈骗互助 v1.1.0</view>
+    <view class="footer-tip">让科技守护每一位长辈</view>
+  </view>
+
+  <view class="footer-blank"></view>
+</view>

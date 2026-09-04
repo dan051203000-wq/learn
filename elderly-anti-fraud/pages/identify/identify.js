@@ -1,3 +1,6 @@
+// 识别页面：粘贴文字/上传图片 → 调云函数识别 → 大色块结果 → 朗读/保存/举报
+const plugin = requirePlugin('WechatSI'); // 微信同声传译插件（用于 TTS 朗读）
+
 Page({
   data: {
     inputType: 'text',
@@ -5,11 +8,19 @@ Page({
     uploadedImage: '',
     showResult: false,
     result: {},
-    history: []
+    history: [],
+    speaking: false, // 是否在朗读
+    evidenceFileId: '' // 拍照存证返回的 fileID
   },
 
   onLoad() {
     this.loadHistory();
+    this.initTTS();
+  },
+
+  onUnload() {
+    // 页面卸载时停止朗读
+    this.stopSpeak();
   },
 
   setInputType(e) {
@@ -28,7 +39,30 @@ Page({
       sourceType: ['album', 'camera'],
       success: res => {
         const file = res.tempFiles[0];
-        this.setData({ uploadedImage: file.tempFilePath });
+        this.setData({ uploadedImage: file.tempFilePath, evidenceFileId: '' });
+        // 选完图立刻上传到云存储做证据保留（用户主动提交，由云函数代理）
+        this.uploadEvidence(file.tempFilePath);
+      }
+    });
+  },
+
+  /**
+   * 把用户选的可疑截图加密路径上传到云存储，作为"证据链"
+   * 仅本机账号能看到，不会被其他人读取（集合权限"仅创建者可读写"）
+   */
+  uploadEvidence(filePath) {
+    const userId = wx.getStorageSync('userId') || 'anonymous';
+    const cloudPath = `fraud-evidence/${userId}/${Date.now()}.jpg`;
+    wx.cloud.uploadFile({
+      cloudPath,
+      filePath,
+      success: res => {
+        this.setData({ evidenceFileId: res.fileID });
+        wx.showToast({ title: '已为您保留证据', icon: 'success' });
+      },
+      fail: err => {
+        // 上传失败不阻断识别流程
+        console.warn('证据上传失败', err);
       }
     });
   },
@@ -72,34 +106,43 @@ Page({
 
     wx.showLoading({ title: '识别中...' });
 
-    // 上传图片到云存储
-    const fileName = `fraud-images/${Date.now()}.jpg`;
-    wx.cloud.uploadFile({
-      cloudPath: fileName,
-      filePath: imagePath,
+    // 上传图片到云存储（如尚未上传）
+    if (!this.data.evidenceFileId) {
+      const fileName = `fraud-images/${wx.getStorageSync('userId') || 'anon'}/${Date.now()}.jpg`;
+      wx.cloud.uploadFile({
+        cloudPath: fileName,
+        filePath: imagePath,
+        success: res => {
+          this.setData({ evidenceFileId: res.fileID });
+          this.callIdentifyFraud('image', res.fileID);
+        },
+        fail: err => {
+          wx.hideLoading();
+          wx.showToast({ title: '上传图片失败', icon: 'error' });
+        }
+      });
+    } else {
+      this.callIdentifyFraud('image', this.data.evidenceFileId);
+    }
+  },
+
+  callIdentifyFraud(type, payload) {
+    const data = { type };
+    if (type === 'text') data.content = payload;
+    else data.imageUrl = payload;
+
+    wx.cloud.callFunction({
+      name: 'identifyFraud',
+      data,
       success: res => {
-        // 调用云函数进行识别
-        wx.cloud.callFunction({
-          name: 'identifyFraud',
-          data: {
-            type: 'image',
-            imageUrl: res.fileID
-          },
-          success: res => {
-            wx.hideLoading();
-            const result = res.result;
-            this.setData({ showResult: true, result });
-            this.saveToHistory('图片识别', result);
-          },
-          fail: err => {
-            wx.hideLoading();
-            wx.showToast({ title: '识别失败', icon: 'error' });
-          }
-        });
+        wx.hideLoading();
+        const result = res.result;
+        this.setData({ showResult: true, result });
+        this.saveToHistory(type === 'image' ? '图片识别' : payload, result);
       },
       fail: err => {
         wx.hideLoading();
-        wx.showToast({ title: '上传图片失败', icon: 'error' });
+        wx.showToast({ title: '识别失败', icon: 'error' });
       }
     });
   },
@@ -187,5 +230,66 @@ Page({
   viewHistory(e) {
     const { id } = e.currentTarget.dataset;
     // 显示历史记录详情
+  },
+
+  /* ===== TTS 朗读（适配老人看不清字） ===== */
+  initTTS() {
+    if (!this._ttsAudio) {
+      this._ttsAudio = wx.createInnerAudioContext();
+      this._ttsAudio.onEnded(() => {
+        this.setData({ speaking: false });
+      });
+      this._ttsAudio.onError((err) => {
+        console.warn('TTS 播放失败', err);
+        this.setData({ speaking: false });
+        wx.showToast({ title: '朗读失败', icon: 'none' });
+      });
+    }
+  },
+
+  speakResult() {
+    const r = this.data.result;
+    if (!r) return;
+    this.initTTS();
+    // 拼接朗读文本：风险标题 + 等级 + 怎么骗 + 怎么识别 + 怎么办
+    const text = [
+      '风险提示：' + (r.riskTitle || ''),
+      '风险等级：' + (r.riskLevelText || ''),
+      '骗子是怎么骗的：' + (r.fraudMethod || ''),
+      '怎么识别：' + ((r.features || []).join('，')),
+      '您应该这样做：' + ((r.countermeasures || []).join('，'))
+    ].join('。');
+
+    if (!plugin || typeof plugin.textToSpeech !== 'function') {
+      wx.showToast({ title: '当前环境不支持朗读', icon: 'none' });
+      return;
+    }
+
+    this.setData({ speaking: true });
+    plugin.textToSpeech({
+      lang: 'zh_CN',
+      tts: true,
+      content: text,
+      success: (res) => {
+        if (res && res.filename) {
+          this._ttsAudio.src = res.filename;
+          this._ttsAudio.play();
+        } else {
+          this.setData({ speaking: false });
+        }
+      },
+      fail: (err) => {
+        console.warn('TTS 调用失败', err);
+        this.setData({ speaking: false });
+        wx.showToast({ title: '朗读功能暂不可用', icon: 'none' });
+      }
+    });
+  },
+
+  stopSpeak() {
+    if (this._ttsAudio) {
+      this._ttsAudio.stop();
+    }
+    this.setData({ speaking: false });
   }
 });

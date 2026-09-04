@@ -12,6 +12,7 @@
     </view>
     <view class="header-title">保护您的钱袋子</view>
     <view class="header-tip">陌生链接不点  验证码不给  汇款先核实</view>
+    <view class="header-disclaimer">⚠️ 本工具为社区辅助应用，重要情况请拨打 96110 核实</view>
   </view>
 
   <!-- 4 大核心功能 -->
@@ -61,10 +62,10 @@
       <view class="feature-title">反诈专线</view>
       <view class="feature-extra feature-extra-bold">96110</view>
     </view>
-    <view class="feature-item" bindtap="about">
+    <view class="feature-item" bindtap="openAbout">
       <view class="feature-icon">ℹ️</view>
-      <view class="feature-title">关于我们</view>
-      <view class="feature-extra">了解应用</view>
+      <view class="feature-title">关于本工具</view>
+      <view class="feature-extra">合规说明</view>
     </view>
   </scroll-view>
 

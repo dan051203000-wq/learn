@@ -79,10 +79,10 @@ Page({
   },
 
   callHotline() {
-    // 反诈专线 96110
+    // 引导用户拨打 96110 反诈专线（外线电话，非本工具能力）
     wx.showModal({
-      title: '反诈中心热线',
-      content: '全国反诈中心专线：96110\n\n点击确定直接拨打',
+      title: '国家反诈中心 96110',
+      content: '本应用是社区辅助工具，不直接对接反诈中心。\n遇到可疑情况建议拨打全国反诈专线 96110 咨询。\n\n点击确定直接拨打',
       confirmText: '拨打 96110',
       cancelText: '取消',
       success: (res) => {
@@ -99,12 +99,9 @@ Page({
     });
   },
 
-  about() {
-    wx.showModal({
-      title: '关于防诈骗互助',
-      content: '本应用帮助老人识别诈骗、学习防诈知识、守护家庭安全。\n\n遇到可疑信息请第一时间拨打 96110 反诈专线。',
-      showCancel: false,
-      confirmText: '我知道了'
+  openAbout() {
+    wx.navigateTo({
+      url: '/pages/about/about'
     });
   },
 

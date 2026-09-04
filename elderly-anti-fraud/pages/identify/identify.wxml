@@ -38,10 +38,11 @@
     <view class="image-upload" bindtap="chooseImage">
       <view class="upload-icon">📷</view>
       <view class="upload-title">点击选择截图</view>
-      <view class="upload-tip">支持短信、聊天、网页截图</view>
+      <view class="upload-tip">支持短信、聊天、网页截图（会加密保存到云端）</view>
     </view>
     <view wx:if="{{uploadedImage}}" class="uploaded-image">
       <image src="{{uploadedImage}}" mode="aspectFit" />
+      <view class="uploaded-tip" wx:if="{{evidenceFileId}}">✅ 证据已加密保留，可作为举报佐证</view>
     </view>
     <button class="submit-btn" bindtap="identifyImage" wx:if="{{uploadedImage}}" hover-class="btn-hover">
       <text class="submit-icon">🔍</text>
@@ -51,12 +52,26 @@
 
   <!-- 识别结果（核心：大色块 + 大字） -->
   <view class="result-wrap" wx:if="{{showResult}}">
+    <!-- 已保留证据提示 -->
+    <view class="evidence-banner" wx:if="{{evidenceFileId}}">
+      <view class="evidence-icon">📁</view>
+      <view class="evidence-text">已为这次识别保留证据，可用于举报或报警</view>
+    </view>
     <!-- 风险大色块 -->
     <view class="result-banner result-{{result.riskLevel}}">
       <view class="result-icon">{{result.icon}}</view>
       <view class="result-title">{{result.riskTitle}}</view>
       <view class="result-level-text">
         风险等级：<text class="level-bold">{{result.riskLevelText}}</text>
+      </view>
+      <!-- 一键朗读（TTS，老人看不清字时用） -->
+      <view class="tts-bar" bindtap="speakResult" wx:if="{{!speaking}}">
+        <view class="tts-icon">🔊</view>
+        <view class="tts-text">点我朗读结果</view>
+      </view>
+      <view class="tts-bar tts-bar-active" bindtap="stopSpeak" wx:else>
+        <view class="tts-icon">⏹</view>
+        <view class="tts-text">停止朗读</view>
       </view>
     </view>
 

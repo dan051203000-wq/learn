@@ -236,7 +236,17 @@
   margin-top: 12rpx;
 }
 
-/* 官方渠道 */
+/* 其他举报渠道 */
+.channel-tip {
+  font-size: 26rpx;
+  color: #777;
+  line-height: 1.6;
+  margin: -8rpx 0 16rpx;
+  padding: 16rpx 20rpx;
+  background-color: #fff8e1;
+  border-left: 6rpx solid #ffa726;
+  border-radius: 8rpx;
+}
 .channel-item {
   display: flex;
   justify-content: space-between;

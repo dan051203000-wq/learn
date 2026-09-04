@@ -1,4 +1,4 @@
-// 举报平台页面：提交诈骗线索 + 查看举报记录 + 官方举报渠道
+// 举报平台页面：提交诈骗线索 + 查看举报记录 + 其他举报渠道
 const fraudTypes = [
   '冒充公检法',
   '投资理财诈骗',
@@ -90,7 +90,7 @@ Page({
 
     wx.showModal({
       title: '确认提交举报',
-      content: '提交后我们将协助您对接反诈中心，紧急情况请直接拨打110或96110。',
+      content: '提交后会保存在您的账号下，紧急情况请直接拨打 110 或反诈专线 96110。',
       confirmText: '确认提交',
       success: res => {
         if (res.confirm) this.doSubmit();
@@ -184,7 +184,7 @@ Page({
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   },
 
-  /* ===== 官方渠道 ===== */
+  /* ===== 其他渠道（外线电话/网站） ===== */
   callPhone(e) {
     const { phone } = e.currentTarget.dataset;
     wx.makePhoneCall({ phoneNumber: phone });
