@@ -39,6 +39,28 @@
     </view>
   </view>
 
+  <!-- AI 智能体横幅（首屏焦点） -->
+  <view class="ai-banner" bindtap="goAiChat">
+    <view class="ai-banner-glow"></view>
+    <view class="ai-banner-hot">🔥 热门</view>
+    <view class="ai-banner-row">
+      <view class="ai-banner-icon">
+        <view class="ai-banner-emoji">🤖</view>
+        <view class="ai-banner-pulse"></view>
+      </view>
+      <view class="ai-banner-content">
+        <view class="ai-banner-title">AI 防诈顾问</view>
+        <view class="ai-banner-sub">24小时在线 · 智能识别 · 老人也能问</view>
+        <view class="ai-banner-tags">
+          <view class="ai-tag">智能识别</view>
+          <view class="ai-tag">反诈答疑</view>
+          <view class="ai-tag">图片识诈</view>
+        </view>
+      </view>
+      <view class="ai-banner-arrow">›</view>
+    </view>
+  </view>
+
   <!-- 横滑更多功能 -->
   <view class="section-header">
     <view class="section-title">
@@ -66,11 +88,6 @@
       <view class="feature-icon">ℹ️</view>
       <view class="feature-title">关于本工具</view>
       <view class="feature-extra">合规说明</view>
-    </view>
-    <view class="feature-item feature-item-blue" bindtap="goAiChat">
-      <view class="feature-icon">🤖</view>
-      <view class="feature-title">AI 顾问</view>
-      <view class="feature-extra feature-extra-bold">问问 AI</view>
     </view>
   </scroll-view>
 

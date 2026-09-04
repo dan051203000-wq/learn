@@ -166,6 +166,130 @@
   color: #888;
 }
 
+/* ===== AI 智能体横幅（首屏焦点） ===== */
+.ai-banner {
+  position: relative;
+  margin: 24rpx;
+  border-radius: 28rpx;
+  padding: 32rpx 28rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  box-shadow: 0 10rpx 30rpx rgba(118, 75, 162, 0.35);
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.ai-banner:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 12rpx rgba(118, 75, 162, 0.4);
+}
+
+.ai-banner-glow {
+  position: absolute;
+  top: -80rpx;
+  right: -80rpx;
+  width: 240rpx;
+  height: 240rpx;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.25), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ai-banner-hot {
+  position: absolute;
+  top: 16rpx;
+  right: 20rpx;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+  font-size: 22rpx;
+  font-weight: bold;
+  padding: 6rpx 14rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 10rpx rgba(255, 107, 107, 0.4);
+  z-index: 2;
+}
+
+.ai-banner-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.ai-banner-icon {
+  position: relative;
+  width: 110rpx;
+  height: 110rpx;
+  margin-right: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-banner-emoji {
+  font-size: 80rpx;
+  filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.2));
+  z-index: 2;
+}
+
+.ai-banner-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  animation: ai-pulse 2s ease-out infinite;
+}
+
+@keyframes ai-pulse {
+  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+}
+
+.ai-banner-content {
+  flex: 1;
+  color: white;
+}
+
+.ai-banner-title {
+  font-size: 38rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+  text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
+}
+
+.ai-banner-sub {
+  font-size: 24rpx;
+  opacity: 0.9;
+  margin-bottom: 14rpx;
+}
+
+.ai-banner-tags {
+  display: flex;
+  gap: 12rpx;
+}
+
+.ai-tag {
+  background: rgba(255, 255, 255, 0.22);
+  color: white;
+  font-size: 22rpx;
+  padding: 6rpx 14rpx;
+  border-radius: 16rpx;
+  backdrop-filter: blur(10rpx);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.ai-banner-arrow {
+  color: white;
+  font-size: 60rpx;
+  font-weight: 300;
+  margin-left: 8rpx;
+  line-height: 1;
+  opacity: 0.85;
+}
+
 /* ===== 分区标题 ===== */
 .section-header {
   display: flex;
