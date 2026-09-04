@@ -63,7 +63,7 @@
       <view class="kv"><text class="k">类型：</text><text class="v">微信小程序 + 微信云开发</text></view>
       <view class="kv"><text class="k">数据：</text><text class="v">数据代理云函数（管理员权限），不向客户端开放数据库直连</text></view>
       <view class="kv"><text class="k">存储：</text><text class="v">识别记录 / 举报 / 帖子 / 案例 / 知识库 / 警报</text></view>
-      <view class="kv"><text class="k">语音：</text><text class="v">识别结果可一键朗读（微信官方同声传译插件）</text></view>
+      <view class="kv"><text class="k">语音：</text><text class="v">识别结果可一键朗读（依赖微信同声传译插件，仅企业/认证主体小程序可用；个人主体小程序该功能已降级为友好提示）</text></view>
       <view class="kv"><text class="k">分类：</text><text class="v">本工具属于"工具 → 信息查询"类目，未涉及金融、安全类受限类目</text></view>
     </view>
   </view>

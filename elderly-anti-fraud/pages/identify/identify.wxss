@@ -300,6 +300,16 @@
   transform: scale(0.95);
 }
 
+.tts-bar-disabled {
+  background-color: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.7);
+  box-shadow: none;
+}
+
+.tts-bar-disabled:active {
+  transform: none;
+}
+
 .tts-icon {
   font-size: 32rpx;
   margin-right: 10rpx;

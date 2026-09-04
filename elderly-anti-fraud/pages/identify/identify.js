@@ -1,5 +1,6 @@
 // 识别页面：粘贴文字/上传图片 → 调云函数识别 → 大色块结果 → 朗读/保存/举报
-const plugin = requirePlugin('WechatSI'); // 微信同声传译插件（用于 TTS 朗读）
+// 注：TTS 朗读功能依赖微信「同声传译」插件（仅企业/认证主体可用）。
+// 个人主体小程序暂不支持该插件，UI 上保留按钮但点击提示「暂未开放」。
 
 Page({
   data: {
@@ -10,7 +11,8 @@ Page({
     result: {},
     history: [],
     speaking: false, // 是否在朗读
-    evidenceFileId: '' // 拍照存证返回的 fileID
+    evidenceFileId: '', // 拍照存证返回的 fileID
+    ttsAvailable: false // TTS 是否可用（个人主体小程序为 false）
   },
 
   onLoad() {
@@ -268,12 +270,33 @@ Page({
         wx.showToast({ title: '朗读失败', icon: 'none' });
       });
     }
+    // 探测插件是否可用（个人主体小程序 requirePlugin 会失败/抛错）
+    try {
+      const plugin = requirePlugin('WechatSI');
+      this._ttsPlugin = plugin;
+      this.setData({ ttsAvailable: !!(plugin && typeof plugin.textToSpeech === 'function') });
+    } catch (e) {
+      this._ttsPlugin = null;
+      this.setData({ ttsAvailable: false });
+    }
   },
 
   speakResult() {
     const r = this.data.result;
     if (!r) return;
     this.initTTS();
+    const plugin = this._ttsPlugin;
+    if (!plugin || typeof plugin.textToSpeech !== 'function') {
+      // 个人主体小程序走不到这里，但仍保留兜底
+      wx.showModal({
+        title: '朗读功能暂未开放',
+        content: '本工具为个人主体小程序，「语音朗读」依赖微信「同声传译」插件，仅企业/认证主体可用。\n\n建议把识别结果截图发给您信任的家人，请他们念给您听。',
+        showCancel: false,
+        confirmText: '我知道了'
+      });
+      return;
+    }
+
     // 拼接朗读文本：风险标题 + 等级 + 怎么骗 + 怎么识别 + 怎么办
     const text = [
       '风险提示：' + (r.riskTitle || ''),
@@ -282,11 +305,6 @@ Page({
       '怎么识别：' + ((r.features || []).join('，')),
       '您应该这样做：' + ((r.countermeasures || []).join('，'))
     ].join('。');
-
-    if (!plugin || typeof plugin.textToSpeech !== 'function') {
-      wx.showToast({ title: '当前环境不支持朗读', icon: 'none' });
-      return;
-    }
 
     this.setData({ speaking: true });
     plugin.textToSpeech({

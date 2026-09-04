@@ -17,12 +17,6 @@
     "navigationBarTitleText": "防诈骗互助",
     "navigationBarTextStyle": "white"
   },
-  "plugins": {
-    "WechatSI": {
-      "version": "latest",
-      "provider": "wx069ba97219f66d99"
-    }
-  },
   "tabBar": {
     "color": "#949EAF",
     "selectedColor": "#2196F3",
