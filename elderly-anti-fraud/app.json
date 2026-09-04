@@ -16,10 +16,10 @@
     "navigationBarTextStyle": "white"
   },
   "tabBar": {
-    "color": "#999",
+    "color": "#949EAF",
     "selectedColor": "#2196F3",
-    "borderStyle": "black",
-    "backgroundColor": "#fff",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
     "list": [
       {
         "pagePath": "pages/index/index",
@@ -29,15 +29,21 @@
       },
       {
         "pagePath": "pages/identify/identify",
-        "text": "识别诈骗",
+        "text": "识别",
         "iconPath": "assets/icons/scan.png",
         "selectedIconPath": "assets/icons/scan-active.png"
       },
       {
         "pagePath": "pages/community/community",
-        "text": "求助社区",
+        "text": "求助",
         "iconPath": "assets/icons/community.png",
         "selectedIconPath": "assets/icons/community-active.png"
+      },
+      {
+        "pagePath": "pages/family/family",
+        "text": "守护",
+        "iconPath": "assets/icons/family.png",
+        "selectedIconPath": "assets/icons/family-active.png"
       },
       {
         "pagePath": "pages/profile/profile",

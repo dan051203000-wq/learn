@@ -1,49 +1,56 @@
+/* ========== 防诈知识 v2：适老化 ===== */
 .container {
-  padding: 20rpx 0 60rpx;
+  padding: 0 0 60rpx;
+  background-color: #f4f6fa;
+  min-height: 100vh;
 }
 
 /* 顶部提示 */
 .page-tip {
   display: flex;
   align-items: center;
-  background-color: #e8f5e9;
-  margin: 20rpx;
-  padding: 24rpx;
-  border-radius: 12rpx;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  margin: 20rpx 24rpx;
+  padding: 28rpx 32rpx;
+  border-radius: 24rpx;
+  border-left: 8rpx solid #43A047;
 }
 
 .tip-icon {
-  font-size: 40rpx;
-  margin-right: 16rpx;
+  font-size: 56rpx;
+  margin-right: 20rpx;
 }
 
 .tip-text {
-  font-size: 28rpx;
-  color: #2e7d32;
-  line-height: 1.5;
+  flex: 1;
+  font-size: 30rpx;
+  color: #1b5e20;
+  line-height: 1.7;
+  font-weight: 500;
 }
 
 /* 分类筛选 */
 .category-bar {
   white-space: nowrap;
-  padding: 10rpx 20rpx;
+  padding: 16rpx 24rpx;
 }
 
 .category-item {
   display: inline-block;
-  background-color: #fff;
-  color: #666;
-  border: 2rpx solid #ddd;
-  border-radius: 30rpx;
-  padding: 12rpx 28rpx;
-  font-size: 26rpx;
+  background-color: white;
+  color: #555;
+  border: 2rpx solid #e0e6ed;
+  border-radius: 32rpx;
+  padding: 16rpx 32rpx;
+  font-size: 28rpx;
+  font-weight: 500;
   margin-right: 16rpx;
 }
 
 .category-item.active {
-  background-color: #2196F3;
+  background: linear-gradient(135deg, #43A047, #2e7d32);
   color: white;
-  border-color: #2196F3;
+  border-color: #43A047;
   font-weight: bold;
 }
 
@@ -52,65 +59,74 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #2196F3, #64b5f6);
-  border-radius: 12rpx;
-  margin: 10rpx 20rpx 20rpx;
-  padding: 28rpx;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+  border-radius: 28rpx;
+  margin: 20rpx 24rpx;
+  padding: 36rpx 32rpx;
+  box-shadow: 0 8rpx 20rpx rgba(33, 150, 243, 0.3);
+  color: white;
 }
 
 .quiz-entry-title {
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: bold;
   color: white;
 }
 
 .quiz-entry-desc {
-  font-size: 24rpx;
+  font-size: 28rpx;
   color: rgba(255, 255, 255, 0.9);
-  margin-top: 8rpx;
+  margin-top: 10rpx;
 }
 
 .quiz-entry-btn {
   background-color: white;
   color: #2196F3;
-  border-radius: 30rpx;
-  padding: 14rpx 30rpx;
-  font-size: 28rpx;
+  border-radius: 32rpx;
+  padding: 16rpx 32rpx;
+  font-size: 28rpx !important;
   font-weight: bold;
+  border: none;
 }
 
 /* 文章列表 */
 .article-card {
   display: flex;
   background-color: white;
-  border-radius: 12rpx;
-  margin: 0 20rpx 20rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  border-radius: 24rpx;
+  margin: 0 24rpx 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  transition: all 0.2s;
+}
+
+.article-card:active {
+  transform: scale(0.99);
 }
 
 .article-icon {
-  font-size: 48rpx;
-  margin-right: 20rpx;
+  font-size: 64rpx;
+  margin-right: 24rpx;
   flex-shrink: 0;
 }
 
 .article-main {
   flex: 1;
+  min-width: 0;
 }
 
 .article-title {
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: bold;
-  color: #333;
+  color: #1a1a1a;
   line-height: 1.5;
 }
 
 .article-summary {
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #777;
-  line-height: 1.6;
-  margin-top: 8rpx;
+  line-height: 1.7;
+  margin-top: 12rpx;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -120,16 +136,17 @@
 .article-meta {
   display: flex;
   justify-content: space-between;
-  margin-top: 12rpx;
+  margin-top: 16rpx;
 }
 
 .article-category {
-  font-size: 22rpx;
+  font-size: 26rpx;
   color: #2196F3;
+  font-weight: 500;
 }
 
 .article-read {
-  font-size: 22rpx;
+  font-size: 26rpx;
   color: #999;
 }
 
@@ -150,40 +167,41 @@
   width: 100%;
   max-height: 85vh;
   background-color: white;
-  border-radius: 24rpx 24rpx 0 0;
-  padding: 40rpx 32rpx;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 48rpx 32rpx 40rpx;
   box-sizing: border-box;
   overflow-y: auto;
 }
 
 .detail-title {
-  font-size: 34rpx;
+  font-size: 38rpx;
   font-weight: bold;
-  color: #333;
+  color: #1a1a1a;
   line-height: 1.5;
 }
 
 .detail-category {
-  font-size: 24rpx;
+  font-size: 28rpx;
   color: #2196F3;
-  margin: 12rpx 0 8rpx;
+  margin: 16rpx 0 12rpx;
+  font-weight: 500;
 }
 
 .detail-line {
   display: flex;
-  margin-top: 20rpx;
+  margin-top: 24rpx;
 }
 
 .detail-num {
-  font-size: 28rpx;
+  font-size: 32rpx;
   color: #2196F3;
   font-weight: bold;
-  margin-right: 12rpx;
+  margin-right: 16rpx;
   flex-shrink: 0;
 }
 
 .detail-text {
-  font-size: 29rpx;
+  font-size: 32rpx;
   color: #444;
   line-height: 1.8;
   flex: 1;
@@ -191,27 +209,30 @@
 
 .detail-actions {
   display: flex;
-  gap: 20rpx;
-  margin-top: 36rpx;
-  padding-bottom: 20rpx;
+  gap: 24rpx;
+  margin-top: 40rpx;
+  padding-bottom: 24rpx;
 }
 
 .detail-btn {
   flex: 1;
   border-radius: 40rpx;
-  font-size: 30rpx;
+  font-size: 32rpx !important;
   padding: 16rpx 0;
   border: none;
+  font-weight: bold;
+  min-height: 88rpx;
+  line-height: 88rpx;
 }
 
 .detail-btn.primary {
-  background-color: #2196F3;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
   color: white;
 }
 
 .detail-btn.plain {
-  background-color: #f0f0f0;
-  color: #333;
+  background: #f0f3f7;
+  color: #555;
 }
 
 /* 小测试 */
@@ -220,54 +241,63 @@
 }
 
 .quiz-progress {
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #2196F3;
   font-weight: bold;
-  margin-bottom: 16rpx;
+  margin-bottom: 20rpx;
+  padding: 12rpx 24rpx;
+  background: #e3f2fd;
+  border-radius: 30rpx;
+  display: inline-block;
 }
 
 .quiz-question-text {
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: bold;
-  color: #333;
-  line-height: 1.6;
-  margin-bottom: 28rpx;
+  color: #1a1a1a;
+  line-height: 1.7;
+  margin-bottom: 36rpx;
 }
 
 .quiz-option {
   display: flex;
   align-items: center;
-  border: 2rpx solid #e0e0e0;
-  border-radius: 12rpx;
-  padding: 22rpx 24rpx;
-  margin-bottom: 18rpx;
-  font-size: 29rpx;
-  color: #444;
-  line-height: 1.5;
+  border: 4rpx solid #e0e6ed;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  font-size: 30rpx;
+  color: #1a1a1a;
+  line-height: 1.6;
+  transition: all 0.2s;
+}
+
+.quiz-option:active {
+  transform: scale(0.99);
 }
 
 .quiz-option.selected {
   border-color: #2196F3;
-  background-color: #e3f2fd;
+  background: #e3f2fd;
 }
 
 .quiz-option.correct {
   border-color: #2e7d32;
-  background-color: #e8f5e9;
+  background: #e8f5e9;
 }
 
 .quiz-option.wrong {
-  border-color: #c62828;
-  background-color: #ffebee;
+  border-color: #b71c1c;
+  background: #ffebee;
 }
 
 .option-letter {
-  width: 48rpx;
-  height: 48rpx;
+  width: 56rpx;
+  height: 56rpx;
   border-radius: 50%;
-  background-color: #f0f0f0;
-  color: #666;
-  font-size: 26rpx;
+  background-color: #f0f3f7;
+  color: #555;
+  font-size: 30rpx;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -277,12 +307,12 @@
 }
 
 .quiz-option.correct .option-letter {
-  background-color: #2e7d32;
+  background: #2e7d32;
   color: white;
 }
 
 .quiz-option.wrong .option-letter {
-  background-color: #c62828;
+  background: #b71c1c;
   color: white;
 }
 
@@ -291,36 +321,41 @@
 }
 
 .quiz-explain {
-  background-color: #fff8e1;
-  border-radius: 8rpx;
-  padding: 20rpx;
-  font-size: 26rpx;
-  color: #e65100;
-  line-height: 1.6;
-  margin-top: 8rpx;
+  background: #fff8e1;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+  color: #bf360c;
+  line-height: 1.7;
+  margin-top: 12rpx;
 }
 
 .quiz-next-btn {
-  background-color: #2196F3;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
   color: white;
   border-radius: 40rpx;
-  font-size: 32rpx;
-  margin-top: 28rpx;
+  font-size: 32rpx !important;
+  font-weight: bold;
+  margin-top: 32rpx;
   padding: 6rpx 0;
+  min-height: 88rpx;
+  line-height: 88rpx;
+  border: none;
 }
 
 .quiz-result-icon {
   text-align: center;
-  font-size: 100rpx;
-  margin-top: 20rpx;
+  font-size: 120rpx;
+  margin-top: 24rpx;
 }
 
 .quiz-result-score {
   text-align: center;
-  font-size: 60rpx;
+  font-size: 72rpx;
   font-weight: bold;
   color: #2196F3;
-  margin-top: 16rpx;
+  margin-top: 20rpx;
+  text-shadow: 0 2rpx 8rpx rgba(33, 150, 243, 0.2);
 }
 
 .quiz-result-text {
@@ -328,12 +363,12 @@
   font-size: 30rpx;
   color: #555;
   line-height: 1.7;
-  margin-top: 20rpx;
-  padding: 0 20rpx;
+  margin-top: 24rpx;
+  padding: 0 24rpx;
 }
 
 .quiz-actions {
   display: flex;
-  gap: 20rpx;
-  margin-top: 40rpx;
+  gap: 24rpx;
+  margin-top: 48rpx;
 }

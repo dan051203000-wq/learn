@@ -43,7 +43,14 @@
     "showES6CompileOption": false,
     "minifyWXML": true,
     "showWxmlCompileOption": false,
-    "condition": false
+    "condition": false,
+    "compileWorklet": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false
   },
   "condition": {
     "search": {
@@ -66,5 +73,11 @@
       "current": -1,
       "list": []
     }
-  }
+  },
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {}
 }

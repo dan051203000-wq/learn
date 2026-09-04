@@ -128,11 +128,42 @@ Page({
       data: { action: 'getHistory', userId, limit: 10 },
       success: res => {
         if (res.result && res.result.success) {
-          const history = res.result.data.map(item => ({
-            ...item,
-            time: new Date(item.timestamp).toLocaleString()
-          }));
+          const history = res.result.data.map(item => {
+            const r = item.result || {};
+            const level = r.riskLevel || 'none';
+            return {
+              ...item,
+              time: new Date(item.timestamp).toLocaleString(),
+              riskClass: level,
+              riskLevelText: r.riskLevelText || this.levelText(level),
+              icon: r.icon || '🔍',
+              riskTitle: r.riskTitle || '识别记录'
+            };
+          });
           this.setData({ history });
+        }
+      }
+    });
+  },
+
+  levelText(level) {
+    const map = { high: '高风险', medium: '中风险', low: '低风险', none: '安全' };
+    return map[level] || '已识别';
+  },
+
+  callHotline() {
+    // 拨打 96110
+    wx.showModal({
+      title: '反诈专线 96110',
+      content: '发现可疑情况，可拨打全国反诈中心专线 96110 咨询。\n\n点击确定直接拨打',
+      confirmText: '拨打 96110',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          wx.makePhoneCall({
+            phoneNumber: '96110',
+            fail: (err) => console.warn('拨号失败', err)
+          });
         }
       }
     });
