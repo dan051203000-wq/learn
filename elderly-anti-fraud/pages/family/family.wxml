@@ -126,13 +126,26 @@
     <view class="switch-role" bindtap="switchRole">切换角色 ›</view>
   </block>
 
-  <!-- 守护动态 -->
+  <!-- 守护动态（家庭预警：来自 familyAlerts 集合） -->
   <view class="events-card" wx:if="{{recentEvents.length > 0}}">
-    <view class="members-title">🕰️ 守护动态</view>
+    <view class="events-title">
+      <view class="events-title-left">
+        <view class="events-title-icon">🛎️</view>
+        <view class="events-title-text">家庭预警动态</view>
+      </view>
+      <view class="events-title-count">共 {{alertCount}} 条</view>
+    </view>
     <view class="event-item" wx:for="{{recentEvents}}" wx:key="index">
-      <view class="event-dot"></view>
+      <view class="event-bar event-bar-{{item.riskLevel}}"></view>
       <view class="event-main">
-        <view class="event-text">{{item.nickName}}{{item.action}}<text class="event-result">（{{item.result}}）</text></view>
+        <view class="event-head">
+          <view class="event-elder">{{item.elderName}}</view>
+          <view class="event-risk event-risk-{{item.riskLevel}}">{{item.result}}</view>
+        </view>
+        <view class="event-text">
+          <text class="event-fraud">{{item.fraudMethod}}</text>
+          <text class="event-snippet" wx:if="{{item.snippet}}">"{{item.snippet}}"</text>
+        </view>
         <view class="event-time">{{item.time}}</view>
       </view>
     </view>

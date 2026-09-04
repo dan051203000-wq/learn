@@ -9,6 +9,7 @@ Page({
     inputName: '',
     showBind: false,
     recentEvents: [],
+    alertCount: 0, // 预警条数
     childContacts: [] // 老人端的子女快速呼叫列表 [{name, phone}]
   },
 
@@ -21,21 +22,47 @@ Page({
     this.loadEvents();
   },
 
+  onShow() {
+    // 切回此页时刷新预警动态（如刚识别完）
+    this.loadEvents();
+  },
+
   /* ===== 角色设置 ===== */
   chooseRole(e) {
     const { role } = e.currentTarget.dataset;
-    let myCode = this.data.myCode;
-    if (role === 'elder' && !myCode) {
-      // 被守护者生成专属守护码
-      myCode = this.generateCode();
-      wx.setStorageSync('familyCode', myCode);
-    }
-    wx.setStorageSync('familyRole', role);
-    this.setData({ role, myCode });
-
     if (role === 'elder') {
-      wx.showToast({ title: '守护码已生成', icon: 'success' });
+      // elder 角色需要先录入一个称呼（demo 友好：预警卡片显示"妈妈识别了一条..."）
+      this.promptElderName(name => {
+        let myCode = this.data.myCode;
+        if (!myCode) {
+          myCode = this.generateCode();
+          wx.setStorageSync('familyCode', myCode);
+        }
+        wx.setStorageSync('familyElderName', name);
+        wx.setStorageSync('familyRole', role);
+        this.setData({ role, myCode });
+        wx.showToast({ title: '守护码已生成', icon: 'success' });
+      });
+    } else {
+      wx.setStorageSync('familyRole', role);
+      this.setData({ role });
     }
+  },
+
+  // 让长辈录入称呼（用于守护动态展示，如"妈妈""王大爷"）
+  promptElderName(cb) {
+    const cached = wx.getStorageSync('familyElderName') || '';
+    wx.showModal({
+      title: '设置长辈称呼',
+      editable: true,
+      placeholderText: '如：妈妈、王大爷',
+      content: cached,
+      success: res => {
+        const input = (res.content || '').trim().substring(0, 10) || '长辈';
+        cb(input);
+      },
+      fail: () => cb(cached || '长辈')
+    });
   },
 
   switchRole() {
@@ -140,29 +167,29 @@ Page({
     });
   },
 
-  /* ===== 守护动态（最近识别记录联动） ===== */
+  /* ===== 守护动态（最近识别预警：来自 familyAlerts） ===== */
   loadEvents() {
     wx.cloud.callFunction({
       name: 'dataService',
-      data: { action: 'getRecentIdentify' },
+      data: { action: 'getFamilyAlerts', limit: 20 },
       success: res => {
         if (res.result && res.result.success && res.result.data.length > 0) {
           const recentEvents = res.result.data.map(item => ({
-            nickName: '家人',
+            elderName: item.elderName || '长辈',
             action: '识别了一条可疑信息',
-            result: item.riskLevelText || '',
+            result: item.riskTitle || '',
+            riskLevel: item.riskLevel || 'none',
+            snippet: item.snippet || '',
+            fraudMethod: item.fraudMethod || '',
             time: this.formatTime(item.timestamp)
           }));
-          this.setData({ recentEvents });
+          this.setData({ recentEvents, alertCount: recentEvents.length });
         } else {
-          this.setData({ recentEvents: [] });
+          this.setData({ recentEvents: [], alertCount: 0 });
         }
       },
       fail: () => {
-        // 云端不可用时展示本地说明
-        this.setData({
-          recentEvents: []
-        });
+        this.setData({ recentEvents: [], alertCount: 0 });
       }
     });
   },

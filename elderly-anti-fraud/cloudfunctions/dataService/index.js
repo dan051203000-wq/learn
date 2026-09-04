@@ -255,6 +255,16 @@ exports.main = async (event) => {
           stats.feedback++;
         }
 
+        // 4) 家庭预警：超过 7 天（按时间戳判断，过期字段 expireAt 兜底）
+        const oldFamilyAlerts = await db.collection('familyAlerts')
+          .where({ timestamp: _.lt(new Date(SEVEN_DAYS)) })
+          .limit(100)
+          .get();
+        for (const item of oldFamilyAlerts.data) {
+          await db.collection('familyAlerts').doc(item._id).remove();
+          stats.familyAlerts = (stats.familyAlerts || 0) + 1;
+        }
+
         return { success: true, stats, cleanedAt: new Date() };
       }
 
@@ -285,6 +295,55 @@ exports.main = async (event) => {
          */
       case 'getKeywords': {
         const res = await db.collection('keywords').limit(200).get();
+        return { success: true, data: res.data };
+      }
+
+      /* ===== 家庭预警动态（子女远程协同预警）
+         * 老人识别出风险后，identifyFraud 自动写入本集合
+         * 子女端 family 页 guardian 角色从本集合拉取最新预警
+         * - elderCode: 老人守护码（用于反查绑定关系）
+         * - elderName: 老人称呼（脱敏后的本地备注名）
+         * - riskLevel: 风险等级 high/medium/low/none
+         * - snippet: 原文摘要（仅前 30 字）
+         * - timestamp: 预警时间
+         * - expireAt: 7 天后过期（cleanupTimer 清理）
+         *
+         * 隐私说明：演示场景下所有家庭预警对所有家庭成员可见（demo 友好）
+         *          生产环境应按 guardianUserId+familyBindings 过滤
+         */
+      case 'addFamilyAlert': {
+        const { elderCode, elderName, riskLevel, riskTitle, fraudMethod, snippet } = event;
+        if (!elderCode) {
+          return { success: false, message: '缺少 elderCode' };
+        }
+        if (!riskLevel || riskLevel === 'none') {
+          // 风险等级为"无"不预警，避免噪音
+          return { success: true, skipped: true };
+        }
+        const res = await db.collection('familyAlerts').add({
+          data: {
+            elderCode: String(elderCode).substring(0, 12),
+            elderName: (elderName || '长辈').substring(0, 10),
+            riskLevel: String(riskLevel || 'medium').substring(0, 10),
+            riskTitle: (riskTitle || '').substring(0, 50),
+            fraudMethod: (fraudMethod || '').substring(0, 50),
+            snippet: (snippet || '').substring(0, 50),
+            timestamp: db.serverDate(),
+            // 7 天后过期，cleanupTimer 定时清理
+            expireAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+          }
+        });
+        return { success: true, id: res._id };
+      }
+
+      case 'getFamilyAlerts': {
+        const { limit, sinceMs } = event;
+        const query = { timestamp: _.gte(new Date(Number(sinceMs) || (Date.now() - 7 * 24 * 60 * 60 * 1000))) };
+        const res = await db.collection('familyAlerts')
+          .where(query)
+          .orderBy('timestamp', 'desc')
+          .limit(Number(limit) || 20)
+          .get();
         return { success: true, data: res.data };
       }
 

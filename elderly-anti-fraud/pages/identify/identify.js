@@ -76,18 +76,23 @@ Page({
 
     wx.showLoading({ title: '识别中...' });
 
-    // 调用云函数进行识别
+    // 调用云函数进行识别（携带 elderCode + elderName，用于家庭预警推送）
+    const familyCode = wx.getStorageSync('familyCode') || '';
+    const elderName = wx.getStorageSync('familyElderName') || '';
     wx.cloud.callFunction({
       name: 'identifyFraud',
       data: {
         type: 'text',
-        content: text
+        content: text,
+        elderCode: familyCode,
+        elderName
       },
       success: res => {
         wx.hideLoading();
         const result = res.result;
         this.setData({ showResult: true, result });
         this.saveToHistory(text, result);
+        this.afterIdentify(result);
       },
       fail: err => {
         wx.hideLoading();
@@ -131,6 +136,10 @@ Page({
     if (type === 'text') data.content = payload;
     else data.imageUrl = payload;
 
+    // 携带 elderCode + elderName（家庭预警推送用）
+    data.elderCode = wx.getStorageSync('familyCode') || '';
+    data.elderName = wx.getStorageSync('familyElderName') || '';
+
     wx.cloud.callFunction({
       name: 'identifyFraud',
       data,
@@ -139,12 +148,26 @@ Page({
         const result = res.result;
         this.setData({ showResult: true, result });
         this.saveToHistory(type === 'image' ? '图片识别' : payload, result);
+        this.afterIdentify(result);
       },
       fail: err => {
         wx.hideLoading();
         wx.showToast({ title: '识别失败', icon: 'error' });
       }
     });
+  },
+
+  /* ===== 识别后联动（家庭预警已通过云函数自动写入 familyAlerts） ===== */
+  afterIdentify(result) {
+    // 仅当有风险且识别者设置了 elderCode 时，弹一条 toast 提示子女已收到预警
+    const hasCode = !!wx.getStorageSync('familyCode');
+    if (hasCode && result && result.riskLevel && result.riskLevel !== 'none') {
+      wx.showToast({
+        title: '已同步给您的守护者',
+        icon: 'success',
+        duration: 2000
+      });
+    }
   },
 
   saveToHistory(text, result) {

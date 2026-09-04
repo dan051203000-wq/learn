@@ -189,21 +189,49 @@ function generateResult(analysis) {
 }
 
 exports.main = async (event, context) => {
+  const db = cloud.database();
+  const _ = db.command;
   try {
-    const { type, content, imageUrl } = event;
+    const { type, content, imageUrl, elderCode, elderName } = event;
 
     // 拉取热更关键词（失败用内置兜底）
     const hotKeywords = await fetchHotKeywords();
+
+    /** 把识别结果推送给子女端：写一条家庭预警（仅风险等级非 none 时）
+     *  需要客户端传 elderCode（家庭守护页生成）+ elderName（家庭守护页录入）
+     *  失败时不影响主识别流程，仅 console.warn
+     */
+    const writeFamilyAlert = async (result, snippet) => {
+      if (!result || !result.riskLevel || result.riskLevel === 'none') return;
+      if (!elderCode) return;
+      try {
+        await db.collection('familyAlerts').add({
+          data: {
+            elderCode: String(elderCode).substring(0, 12),
+            elderName: (elderName || '长辈').substring(0, 10),
+            riskLevel: String(result.riskLevel).substring(0, 10),
+            riskTitle: String(result.riskTitle || '').substring(0, 50),
+            fraudMethod: String(result.fraudMethod || '').substring(0, 50),
+            snippet: String(snippet || '').substring(0, 50),
+            timestamp: new Date(),
+            expireAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+          }
+        });
+      } catch (e) {
+        console.warn('writeFamilyAlert failed', e.message);
+      }
+    };
 
     if (type === 'text') {
       const analysis = analyzeText(content, hotKeywords);
       const result = generateResult(analysis);
       result.hotKeywordCount = hotKeywords ? hotKeywords.length : 0;
+      await writeFamilyAlert(result, content);
       return result;
     } else if (type === 'image') {
       // 图片识别目前简化处理（未接入 OCR）
       // 仍返回 disclaimer，避免老人相信"没问题"
-      return {
+      const result = {
         riskLevel: 'medium',
         riskTitle: '⚠️ 建议核实',
         icon: '⚠️',
@@ -220,6 +248,8 @@ exports.main = async (event, context) => {
         disclaimer: '本识别基于简单规则，结果不一定准确。未检测到风险 ≠ 绝对安全，仍建议通过官方渠道核实，紧急情况请直接拨打 110 或反诈专线 96110。',
         timestamp: new Date()
       };
+      await writeFamilyAlert(result, '图片识别');
+      return result;
     }
 
     return { error: '不支持的识别类型', disclaimer: '识别异常，请直接拨打 96110 反诈专线核实' };
