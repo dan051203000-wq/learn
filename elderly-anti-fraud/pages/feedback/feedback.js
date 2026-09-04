@@ -41,7 +41,7 @@ Page({
       name: 'dataService',
       data: {
         action: 'submitFeedback',
-        userId: wx.getStorageSync('userId') || '',
+        userId: getApp().globalData.openId || wx.getStorageSync('userId') || '',
         type: this.data.feedbackType,
         content: this.data.content,
         contact: this.data.contact

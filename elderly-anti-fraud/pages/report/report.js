@@ -119,7 +119,7 @@ Page({
         name: 'dataService',
         data: {
           action: 'addReport',
-          userId: wx.getStorageSync('userId'),
+          userId: getApp().globalData.openId || wx.getStorageSync('userId') || '',
           fraudType: this.data.typeText,
           fraudPhone: this.data.fraudPhone.trim(),
           fraudAccount: this.data.fraudAccount.trim(),
@@ -156,7 +156,7 @@ Page({
 
   /* ===== 我的举报记录 ===== */
   loadMyReports() {
-    const userId = wx.getStorageSync('userId');
+    const userId = getApp().globalData.openId || wx.getStorageSync('userId');
     if (!userId) return;
 
     wx.cloud.callFunction({

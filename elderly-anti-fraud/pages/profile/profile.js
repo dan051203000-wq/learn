@@ -62,7 +62,7 @@ Page({
   },
 
   loadStats() {
-    const userId = wx.getStorageSync('userId');
+    const userId = getApp().globalData.openId || wx.getStorageSync('userId');
     if (!userId) return;
 
     wx.cloud.callFunction({
@@ -80,7 +80,7 @@ Page({
   },
 
   loadHistory() {
-    const userId = wx.getStorageSync('userId');
+    const userId = getApp().globalData.openId || wx.getStorageSync('userId');
     if (!userId) return;
 
     wx.cloud.callFunction({
@@ -159,7 +159,7 @@ Page({
           // 通过云函数批量删除该用户的识别记录
           wx.cloud.callFunction({
             name: 'dataService',
-            data: { action: 'clearHistory', userId: wx.getStorageSync('userId') },
+            data: { action: 'clearHistory', userId: getApp().globalData.openId || wx.getStorageSync('userId') },
             success: r => {
               if (r.result && r.result.success) {
                 this.setData({ history: [] });

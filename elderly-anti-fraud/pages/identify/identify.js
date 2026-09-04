@@ -53,7 +53,8 @@ Page({
    * 仅本机账号能看到，不会被其他人读取（集合权限"仅创建者可读写"）
    */
   uploadEvidence(filePath) {
-    const userId = wx.getStorageSync('userId') || 'anonymous';
+    // 优先用 OPENID，回退本地 userId
+    const userId = getApp().globalData.openId || wx.getStorageSync('userId') || 'anonymous';
     const cloudPath = `fraud-evidence/${userId}/${Date.now()}.jpg`;
     wx.cloud.uploadFile({
       cloudPath,
@@ -115,7 +116,8 @@ Page({
 
     // 上传图片到云存储（如尚未上传）
     if (!this.data.evidenceFileId) {
-      const fileName = `fraud-images/${wx.getStorageSync('userId') || 'anon'}/${Date.now()}.jpg`;
+      const userId = getApp().globalData.openId || wx.getStorageSync('userId') || 'anon';
+      const fileName = `fraud-images/${userId}/${Date.now()}.jpg`;
       wx.cloud.uploadFile({
         cloudPath: fileName,
         filePath: imagePath,
@@ -173,11 +175,13 @@ Page({
   },
 
   saveToHistory(text, result) {
+    const app = getApp();
+    const userId = app.globalData.openId || wx.getStorageSync('userId') || '';
     wx.cloud.callFunction({
       name: 'dataService',
       data: {
         action: 'saveHistory',
-        userId: wx.getStorageSync('userId'),
+        userId,
         text: text.substring(0, 50),
         result
       },
@@ -188,7 +192,8 @@ Page({
   },
 
   loadHistory() {
-    const userId = wx.getStorageSync('userId');
+    const app = getApp();
+    const userId = app.globalData.openId || wx.getStorageSync('userId');
     if (!userId) return;
 
     wx.cloud.callFunction({

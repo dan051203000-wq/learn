@@ -6,8 +6,15 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
-exports.main = async (event) => {
+exports.main = async (event, context) => {
   const { action } = event;
+  // ===== 关键：用云端 OPENID 覆盖客户端传的 userId，鉴权从源头切断伪造 =====
+  // 个人主体小程序通过 wx.login + cloud.getWXContext() 可拿到 OPENID
+  const wxContext = cloud.getWXContext();
+  const OPENID = wxContext.OPENID || '';
+  if (event.userId !== undefined) {
+    event.userId = OPENID || event.userId; // 有 OPENID 就用真身份，否则兜底客户端传的
+  }
   try {
     switch (action) {
       /* ===== 案例库 ===== */
@@ -323,6 +330,7 @@ exports.main = async (event) => {
         const res = await db.collection('familyAlerts').add({
           data: {
             elderCode: String(elderCode).substring(0, 12),
+            elderOpenId: OPENID || '', // 真实身份溯源（个人主体也能用）
             elderName: (elderName || '长辈').substring(0, 10),
             riskLevel: String(riskLevel || 'medium').substring(0, 10),
             riskTitle: (riskTitle || '').substring(0, 50),

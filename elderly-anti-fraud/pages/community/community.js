@@ -44,9 +44,9 @@ Page({
   },
 
   onLoad() {
-    const userId = wx.getStorageSync('userId');
-    if (!userId) {
-      // 生成一个简单用户标识，用于区分"我的"帖子
+    // 优先用 OPENID（登录后），否则暂时用本地 userId（app.js fallback 时生成）
+    const app = getApp();
+    if (!app.globalData.openId && !wx.getStorageSync('userId')) {
       const newId = 'u' + Date.now();
       wx.setStorageSync('userId', newId);
     }
@@ -149,7 +149,7 @@ Page({
     if (this.data.publishing) return;
     this.setData({ publishing: true });
 
-    const userId = wx.getStorageSync('userId');
+    const userId = getApp().globalData.openId || wx.getStorageSync('userId');
 
     wx.cloud.callFunction({
       name: 'dataService',
