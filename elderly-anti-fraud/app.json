@@ -9,7 +9,8 @@
     "pages/report/report",
     "pages/profile/profile",
     "pages/about/about",
-    "pages/feedback/feedback"
+    "pages/feedback/feedback",
+    "pages/aiChat/aiChat"
   ],
   "window": {
     "backgroundTextStyle": "light",

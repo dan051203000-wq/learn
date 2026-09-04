@@ -1,0 +1,78 @@
+<!-- AI 反诈顾问页面：对话气泡 + 快捷提问 -->
+<view class="page">
+
+  <!-- 顶部说明卡（避免老人以为是真人） -->
+  <view class="ai-banner">
+    <view class="ai-banner-left">
+      <view class="ai-banner-icon">🤖</view>
+      <view class="ai-banner-info">
+        <view class="ai-banner-title">AI 反诈顾问</view>
+        <view class="ai-banner-sub">遇到可疑情况，随时问我</view>
+      </view>
+    </view>
+    <view class="ai-banner-tag">腾讯混元 AI</view>
+  </view>
+
+  <!-- 对话区 -->
+  <scroll-view class="chat-scroll" scroll-y="true" scroll-into-view="{{scrollToView}}">
+    <!-- 欢迎消息 -->
+    <view class="msg msg-ai" id="msg-welcome">
+      <view class="msg-avatar">🤖</view>
+      <view class="msg-bubble msg-bubble-ai">
+        <view class="msg-text">您好，我是您的反诈顾问。把收到的短信内容念给我听，或者直接问我：「医保冻结是不是真的？」、「高回报投资能信吗？」…</view>
+      </view>
+    </view>
+
+    <!-- 对话列表 -->
+    <view wx:for="{{messages}}" wx:key="id" id="msg-{{item.id}}" class="msg msg-{{item.role}}">
+      <view class="msg-avatar" wx:if="{{item.role === 'ai'}}">🤖</view>
+      <view class="msg-bubble msg-bubble-{{item.role}}">
+        <view class="msg-text">{{item.content}}</view>
+        <view class="msg-meta" wx:if="{{item.aiPowered === false}}">自动回复</view>
+      </view>
+      <view class="msg-avatar" wx:if="{{item.role === 'user'}}">👴</view>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="msg msg-ai" wx:if="{{loading}}">
+      <view class="msg-avatar">🤖</view>
+      <view class="msg-bubble msg-bubble-ai msg-bubble-typing">
+        <view class="typing-dot"></view>
+        <view class="typing-dot"></view>
+        <view class="typing-dot"></view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 快捷提问（老人不知道问什么时点这些） -->
+  <view class="quick-questions" wx:if="{{messages.length <= 2}}">
+    <view class="quick-title">💡 您可以这样问：</view>
+    <view class="quick-grid">
+      <view class="quick-item" bindtap="askQuick" data-q="我收到短信说我医保账户要冻结，让我转账到安全账户，是真的吗？">
+        <view class="quick-icon">🏥</view>
+        <view class="quick-text">医保冻结短信是真的吗？</view>
+      </view>
+      <view class="quick-item" bindtap="askQuick" data-q="有人拉我加入投资群，承诺一个月回报30%，能信吗？">
+        <view class="quick-icon">💰</view>
+        <view class="quick-text">高回报投资能信吗？</view>
+      </view>
+      <view class="quick-item" bindtap="askQuick" data-q="我儿子突然发微信说他在外面出了事，急着用钱，不让我告诉他妈，怎么办？">
+        <view class="quick-icon">😰</view>
+        <view class="quick-text">儿子出事要钱怎么办？</view>
+      </view>
+      <view class="quick-item" bindtap="askQuick" data-q="客服打电话说我快递丢了要给我退款，让我加微信操作，靠谱吗？">
+        <view class="quick-icon">📦</view>
+        <view class="quick-text">快递退款客服靠谱吗？</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入区 -->
+  <view class="input-bar">
+    <input class="input" placeholder="问点什么…（比如：医保冻结能信吗）" value="{{inputText}}" bindinput="onInput" confirm-type="send" bindconfirm="send" maxlength="500" />
+    <button class="send-btn" bindtap="send" disabled="{{loading || !inputText.trim()}}">
+      <text wx:if="{{!loading}}">发送</text>
+      <text wx:else>…</text>
+    </button>
+  </view>
+</view>

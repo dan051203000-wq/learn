@@ -67,6 +67,11 @@
       <view class="feature-title">关于本工具</view>
       <view class="feature-extra">合规说明</view>
     </view>
+    <view class="feature-item feature-item-blue" bindtap="goAiChat">
+      <view class="feature-icon">🤖</view>
+      <view class="feature-title">AI 顾问</view>
+      <view class="feature-extra feature-extra-bold">问问 AI</view>
+    </view>
   </scroll-view>
 
   <!-- 最新诈骗警报 -->

@@ -21,12 +21,15 @@
 | 个人中心 | `pages/profile/` | 识别历史、举报次数、大字模式、修改称呼、**关于本工具（合规说明）**、**📮 意见反馈**（v1.2 新增） |
 | 关于页 | `pages/about/` | 产品定位、隐私摘要、免责声明、合规承诺 |
 | 反馈页 | `pages/feedback/` | 类型选择 + 内容 + 联系方式（手机号自动脱敏） |
+| AI 反诈顾问 | `pages/aiChat/` | **v1.5 AI 化**：与腾讯混元大模型对话，4 个快捷提问卡片（v1.5 新增） |
 
 ## 技术栈
 
 - **前端**：微信小程序（WXML + WXSS + JavaScript）
 - **后端**：微信云开发（云函数 + 云数据库 + 云存储）
-- **AI 识别**：云函数内置 6 类诈骗特征库 + 关键词匹配
+- **AI 识别**：
+  - **v1.5 真 AI 版**：腾讯混元大模型（hunyuan-turbos-latest），云函数 `cloud.ai()` 接入，智能识别 + 对话 + 摘要
+  - 兜底：6 类诈骗特征库 + 关键词匹配（AI 不可用时自动降级）
 - **图标**：`tools/gen_icons.py` 用 Pillow 批量生成（透明 PNG）
 
 ## 项目结构
@@ -46,10 +49,21 @@ elderly-anti-fraud/
 │   └── feedback/                  # 意见反馈（v1.2 新增）
 ├── cloudfunctions/
 │   ├── identifyFraud/            # 诈骗识别云函数（含家庭预警推送）
-│   ├── dataService/              # 数据统一代理云函数（含 12+ actions）
+│   ├── identifyFraudAI/          # 🤖 AI 智能识别（v1.5 混元大模型）
+│   ├── aiChat/                   # 🤖 AI 反诈顾问多轮对话（v1.5）
+│   ├── aiSummary/                # 🤖 家庭预警 AI 摘要（v1.5）
+│   ├── identifyImageAI/          # 🤖 图片 OCR + AI 识别（v1.5，需腾讯云 OCR 凭证）
+│   ├── dataService/              # 数据统一代理云函数（含 13+ actions）
 │   ├── cleanupTimer/             # 每日 3 点定时清理（v1.2 新增）
 │   ├── getKeywords/              # 关键词热更新读取（v1.2 新增）
+│   ├── login/                    # 微信登录换 OPENID（v1.4 新增）
 │   └── initDB/                   # 一键初始化：创建集合并写入示例数据
+├── pages/
+│   ├── index/                    # 首页（v1.5 加 AI 顾问入口）
+│   ├── identify/                 # 诈骗识别（v1.5 加 AI 徽章 + 兜底机制）
+│   ├── family/                   # 家庭守护（v1.5 加 AI 摘要卡片）
+│   ├── aiChat/                   # 🤖 AI 反诈顾问页（v1.5 新增）
+│   ├── ...                       # 其他 7 个页面
 ├── docs/                  # 比赛/演示材料（v1.2 新增）
 │   ├── DEMO_SCRIPT.md            # 演示视频脚本
 │   ├── PPT_OUTLINE.md            # PPT 大纲
@@ -112,6 +126,38 @@ elderly-anti-fraud/
 }
 ```
 
+## ⭐ v1.5 AI 化能力：腾讯混元大模型接入
+
+**新增 4 个 AI 能力**，全部走 `wx-server-sdk 4.x` 的 `cloud.ai()` 接口（**个人主体完全可用**，免费额度 10 万 Token/月）：
+
+| 能力 | 云函数 | 触发场景 | 失败兜底 |
+|---|---|---|---|
+| **🤖 智能识别** | `identifyFraudAI` | 识别页提交文本时优先调用 | 自动降级到原规则匹配 |
+| **🤖 AI 助手对话** | `aiChat` | AI 顾问页发送消息 | 友好引导 + 提示拨打 96110 |
+| **🤖 家庭预警摘要** | `aiSummary` | 守护者端拉到预警时自动生成 | 统计文字"识别 X 条可疑信息" |
+| **🤖 图片 OCR + AI** | `identifyImageAI` | 识别页选图时调用 | 降级到原图片识别 |
+
+**AI 调用链路**：
+```
+用户操作 → wx.cloud.callFunction → AI 云函数 → cloud.ai().createModel('cloudbase')
+                                                    ↓
+                                              hunyuan-turbos-latest
+                                                    ↓
+                                              返回 JSON 解析 + 兜底字段
+```
+
+**Prompt 设计**（详见各云函数）：8 类诈骗特征速查 + 老人易懂措辞 + 强制免责语。
+
+**开启方式**：
+1. 微信开发者工具 → Ctrl+R 重新编译
+2. （可选）去云开发控制台 → AI → 立即开通：加速 AI 配额下发，否则会用基础环境默认额度
+3. （可选）申请「AI 小程序成长计划」拿 10 亿 Token 资源包
+
+**演示效果**（比赛亮点）：
+- 识别结果上方有 `🤖 腾讯混元 AI 智能分析` 紫蓝渐变徽章
+- AI 助手页对话气泡带打字动画
+- 家庭守护页顶部 AI 摘要卡 `🤖 AI 智能摘要：今天识别 2 条高风险信息...`
+
 ## ⭐ 核心创新点（v1.2）：子女远程协同预警
 
 **演示闭环**：
@@ -122,7 +168,7 @@ elderly-anti-fraud/
        ↓ 自动写 familyAlerts 集合
        ↓
 [子女"家庭守护"页"家庭预警动态"]
-       显示：妈妈 · 🚨 极高风险 · 冒充公检法 · "刚刚"
+  显示：妈妈 · 🚨 极高风险 · 冒充公检法 · "刚刚"
 ```
 
 **关键代码位置**：
@@ -154,7 +200,18 @@ cd elderly-anti-fraud
 - `fraudCases`、`communityPosts`、`identifyHistory`、`alerts`、`reports`
 
 ### 5. 上传云函数
-右键 `cloudfunctions/identifyFraud`、`cloudfunctions/initDB`、`cloudfunctions/dataService` → 选择"上传并部署：云端安装依赖"（三个都要上传）。
+右键以下云函数目录 → 选择"上传并部署：云端安装依赖"（**8 个都要上传**）：
+- `cloudfunctions/identifyFraud` - 规则匹配识别
+- `cloudfunctions/identifyFraudAI` - 🤖 AI 智能识别
+- `cloudfunctions/identifyImageAI` - 🤖 图片 OCR + AI
+- `cloudfunctions/aiChat` - 🤖 AI 反诈顾问
+- `cloudfunctions/aiSummary` - 🤖 家庭预警 AI 摘要
+- `cloudfunctions/dataService` - 数据代理
+- `cloudfunctions/login` - 微信登录
+- `cloudfunctions/cleanupTimer`、`cloudfunctions/getKeywords`、`cloudfunctions/initDB` - 配套功能
+
+### 6.（可选）开通 AI 能力
+云开发控制台 → AI → 立即开通，让 AI 配额快速下发。**不操作也能跑**，AI 调用会兜底到规则匹配。
 
 > **架构说明**：小程序端所有数据读写均通过 `dataService` 云函数完成。云函数以管理员权限访问数据库，不受集合权限设置影响，因此**无需手动配置数据库权限**，数据也无法被客户端直接篡改，更安全。
 

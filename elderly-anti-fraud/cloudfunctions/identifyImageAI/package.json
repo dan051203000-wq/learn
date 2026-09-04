@@ -1,0 +1,10 @@
+{
+  "name": "identifyImageAI",
+  "version": "1.0.0",
+  "description": "老年人防诈骗小程序 - 图片 OCR + AI 识别（需配置腾讯云 OCR API 凭证）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "^4.0.2",
+    "tencentcloud-sdk-nodejs": "^4.0.0"
+  }
+}

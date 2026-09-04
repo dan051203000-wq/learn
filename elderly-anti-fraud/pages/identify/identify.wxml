@@ -64,6 +64,11 @@
       <view class="result-level-text">
         风险等级：<text class="level-bold">{{result.riskLevelText}}</text>
       </view>
+      <!-- AI 标识（混元大模型智能分析） -->
+      <view class="ai-badge" wx:if="{{aiPowered}}">
+        <text class="ai-badge-icon">🤖</text>
+        <text class="ai-badge-text">腾讯混元 AI 智能分析</text>
+      </view>
       <!-- 一键朗读（TTS，老人看不清字时用。个人主体小程序暂不可用，按钮降级显示） -->
       <view class="tts-bar {{ttsAvailable ? '' : 'tts-bar-disabled'}}" bindtap="speakResult">
         <view class="tts-icon">🔊</view>

@@ -184,13 +184,45 @@ Page({
             time: this.formatTime(item.timestamp)
           }));
           this.setData({ recentEvents, alertCount: recentEvents.length });
+          // 拉到预警后调 AI 摘要
+          this.loadAISummary(recentEvents);
         } else {
-          this.setData({ recentEvents: [], alertCount: 0 });
+          this.setData({ recentEvents: [], alertCount: 0, aiSummary: '' });
         }
       },
       fail: () => {
         this.setData({ recentEvents: [], alertCount: 0 });
       }
+    });
+  },
+
+  /**
+   * AI 智能摘要：调 aiSummary 云函数，把多条预警汇总成一句话
+   */
+  loadAISummary(recentEvents) {
+    if (!recentEvents || recentEvents.length === 0) {
+      this.setData({ aiSummary: '' });
+      return;
+    }
+    // 用守护码（不是单个 alertCode，是所有绑定的成员）
+    const memberCodes = (this.data.members || []).map(m => m.code).filter(Boolean);
+    if (memberCodes.length === 0) {
+      this.setData({ aiSummary: '' });
+      return;
+    }
+    // 守护者端一次只能看一个长辈的，循环取第一个
+    const elderCode = memberCodes[0];
+
+    wx.cloud.callFunction({
+      name: 'aiSummary',
+      data: { elderCode, days: 1, maxItems: 5 },
+      success: res => {
+        const r = res.result || {};
+        if (r.success && r.summary) {
+          this.setData({ aiSummary: r.summary, aiPowered: !!r.aiPowered });
+        }
+      },
+      fail: err => console.warn('[aiSummary] 调用失败:', err)
     });
   },
 

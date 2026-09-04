@@ -624,3 +624,50 @@
   color: #e65100;
   font-weight: bold;
 }
+
+/* ===== AI 智能摘要卡片 ===== */
+.ai-summary-card {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  border-radius: 20rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 28rpx;
+  box-shadow: 0 4rpx 16rpx rgba(33, 150, 243, 0.15);
+}
+
+.ai-summary-icon {
+  font-size: 56rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.ai-summary-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-summary-label {
+  font-size: 24rpx;
+  color: #1976D2;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+}
+
+.ai-summary-text {
+  font-size: 30rpx;
+  color: #0d47a1;
+  line-height: 1.6;
+  margin-top: 6rpx;
+  word-break: break-word;
+}
+
+.ai-summary-powered {
+  font-size: 22rpx;
+  color: #1976D2;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 16rpx;
+  padding: 6rpx 14rpx;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}

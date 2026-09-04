@@ -126,6 +126,16 @@
     <view class="switch-role" bindtap="switchRole">切换角色 ›</view>
   </block>
 
+  <!-- AI 摘要卡片（混元大模型生成） -->
+  <view class="ai-summary-card" wx:if="{{aiSummary}}">
+    <view class="ai-summary-icon">🤖</view>
+    <view class="ai-summary-body">
+      <view class="ai-summary-label">AI 智能摘要</view>
+      <view class="ai-summary-text">{{aiSummary}}</view>
+    </view>
+    <view class="ai-summary-powered">腾讯混元</view>
+  </view>
+
   <!-- 守护动态（家庭预警：来自 familyAlerts 集合） -->
   <view class="events-card" wx:if="{{recentEvents.length > 0}}">
     <view class="events-title">

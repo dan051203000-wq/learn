@@ -1,0 +1,9 @@
+{
+  "name": "identifyFraudAI",
+  "version": "1.0.0",
+  "description": "老年人防诈骗小程序 - AI 智能识别（混元大模型）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "^4.0.2"
+  }
+}

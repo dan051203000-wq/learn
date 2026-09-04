@@ -1,0 +1,9 @@
+{
+  "name": "aiChat",
+  "version": "1.0.0",
+  "description": "老年人防诈骗小程序 - AI 反诈顾问多轮对话",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "^4.0.2"
+  }
+}

@@ -77,30 +77,34 @@ Page({
       return;
     }
 
-    wx.showLoading({ title: '识别中...' });
+    wx.showLoading({ title: 'AI 智能分析中...', mask: true });
 
-    // 调用云函数进行识别（携带 elderCode + elderName，用于家庭预警推送）
+    // 携带 elderCode + elderName，用于家庭预警推送
     const familyCode = wx.getStorageSync('familyCode') || '';
     const elderName = wx.getStorageSync('familyElderName') || '';
+
+    // 第一步：尝试 AI 识别（混元大模型）
     wx.cloud.callFunction({
-      name: 'identifyFraud',
+      name: 'identifyFraudAI',
       data: {
-        type: 'text',
-        content: text,
-        elderCode: familyCode,
-        elderName
+        text,
+        source: 'text'
       },
-      success: res => {
-        wx.hideLoading();
-        const result = res.result;
-        this.setData({ showResult: true, result });
-        this.saveToHistory(text, result);
-        this.afterIdentify(result);
+      success: aiRes => {
+        const aiResult = aiRes.result || {};
+        if (aiResult.success && aiResult.data) {
+          // AI 成功 → 用 AI 结果
+          wx.hideLoading();
+          this.handleIdentifyResult(text, aiResult.data, aiResult);
+          return;
+        }
+        // AI 返回 needFallback 或失败 → 兜底调原规则匹配
+        console.warn('[identify] AI 识别走兜底:', aiResult.error);
+        this.callIdentifyFraudFallback('text', text, familyCode, elderName);
       },
       fail: err => {
-        wx.hideLoading();
-        wx.showToast({ title: '识别失败，请重试', icon: 'error' });
-        console.error('识别失败', err);
+        console.warn('[identify] AI 云函数调用失败，走兜底:', err);
+        this.callIdentifyFraudFallback('text', text, familyCode, elderName);
       }
     });
   },
@@ -112,7 +116,7 @@ Page({
       return;
     }
 
-    wx.showLoading({ title: '识别中...' });
+    wx.showLoading({ title: '上传并分析图片...', mask: true });
 
     // 上传图片到云存储（如尚未上传）
     if (!this.data.evidenceFileId) {
@@ -123,7 +127,7 @@ Page({
         filePath: imagePath,
         success: res => {
           this.setData({ evidenceFileId: res.fileID });
-          this.callIdentifyFraud('image', res.fileID);
+          this.callImageAI(res.fileID);
         },
         fail: err => {
           wx.hideLoading();
@@ -131,18 +135,59 @@ Page({
         }
       });
     } else {
-      this.callIdentifyFraud('image', this.data.evidenceFileId);
+      this.callImageAI(this.data.evidenceFileId);
     }
   },
 
-  callIdentifyFraud(type, payload) {
+  /**
+   * 图片 AI 识别：优先调 identifyImageAI（OCR + 混元）
+   * 失败兜底调原 identifyFraud
+   */
+  callImageAI(fileID) {
+    wx.cloud.callFunction({
+      name: 'identifyImageAI',
+      data: { imageUrl: fileID }
+    }).then(ocrRes => {
+      wx.hideLoading();
+      const ocrResult = ocrRes.result || {};
+      if (ocrResult.success && ocrResult.data) {
+        // OCR + AI 成功
+        const text = ocrResult.data.ocrText || '（图片中未识别到文字）';
+        this.callIdentifyFraudFallback('image', text, wx.getStorageSync('familyCode') || '', wx.getStorageSync('familyElderName') || '', true);
+        return;
+      }
+      // OCR 失败（凭证缺失/调用失败）→ 兜底原识别
+      console.warn('[identify] 图片 AI 走兜底:', ocrResult.error);
+      this.callIdentifyFraudFallback('image', fileID, wx.getStorageSync('familyCode') || '', wx.getStorageSync('familyElderName') || '', false, true);
+    }).catch(err => {
+      wx.hideLoading();
+      console.warn('[identify] 图片 AI 调用失败，走兜底:', err);
+      this.callIdentifyFraudFallback('image', fileID, wx.getStorageSync('familyCode') || '', wx.getStorageSync('familyElderName') || '', false, true);
+    });
+  },
+
+  /**
+   * 兜底：调原 identifyFraud（规则匹配）
+   * @param {string} type - 'text' | 'image'
+   * @param {string} payload - 文本内容 或 fileID
+   * @param {string} familyCode - 守护码
+   * @param {string} elderName - 长辈称呼
+   * @param {boolean} fromOCR - 图片是否经过 OCR（true 时把 payload 当文本）
+   * @param {boolean} isImageFile - 兜底路径时把 payload 当 fileID
+   */
+  callIdentifyFraudFallback(type, payload, familyCode, elderName, fromOCR, isImageFile) {
     const data = { type };
     if (type === 'text') data.content = payload;
-    else data.imageUrl = payload;
+    else if (type === 'image' && fromOCR) data.content = payload;  // OCR 后的文本
+    else data.imageUrl = payload;  // 兜底原图 fileID
 
-    // 携带 elderCode + elderName（家庭预警推送用）
-    data.elderCode = wx.getStorageSync('familyCode') || '';
-    data.elderName = wx.getStorageSync('familyElderName') || '';
+    data.elderCode = familyCode;
+    data.elderName = elderName;
+
+    if (type === 'image' && !isImageFile && !fromOCR) {
+      // 兜底原图
+      data.imageUrl = payload;
+    }
 
     wx.cloud.callFunction({
       name: 'identifyFraud',
@@ -150,15 +195,42 @@ Page({
       success: res => {
         wx.hideLoading();
         const result = res.result;
-        this.setData({ showResult: true, result });
-        this.saveToHistory(type === 'image' ? '图片识别' : payload, result);
-        this.afterIdentify(result);
+        this.handleIdentifyResult(type === 'image' && fromOCR ? (payload.substring(0, 50) + '[图片OCR]') : (type === 'image' ? '图片识别' : payload), result, null);
       },
       fail: err => {
         wx.hideLoading();
-        wx.showToast({ title: '识别失败', icon: 'error' });
+        wx.showToast({ title: '识别失败，请重试', icon: 'error' });
+        console.error('兜底识别失败', err);
       }
     });
+  },
+
+  /**
+   * 统一处理识别结果（AI 或兜底）
+   */
+  handleIdentifyResult(textSnippet, result, aiMeta) {
+    // 适配显示（统一字段）
+    const display = this.normalizeResult(result);
+    this.setData({ showResult: true, result: display, aiPowered: !!(aiMeta && aiMeta.aiPowered) });
+    this.saveToHistory(textSnippet, display);
+    this.afterIdentify(display);
+  },
+
+  /**
+   * 字段归一：把 AI 返回 / 原规则返回的字段统一为页面渲染需要的格式
+   */
+  normalizeResult(r) {
+    if (!r) return {};
+    return {
+      riskLevel: r.riskLevel || 'none',
+      riskLevelText: r.riskLevelText || ({ high: '🚨 高风险', medium: '⚠️ 中风险', low: '⚠️ 低风险', none: '✅ 安全' })[r.riskLevel] || '已识别',
+      riskTitle: r.riskTitle || '识别结果',
+      icon: r.icon || ({ high: '🚨', medium: '⚠️', low: '⚠️', none: '✅' })[r.riskLevel] || '🔍',
+      fraudMethod: r.fraudMethod || '',
+      features: r.features || [],
+      countermeasures: r.countermeasures || [],
+      disclaimer: r.disclaimer || '本识别仅供参考，未检测到风险 ≠ 绝对安全，紧急情况请直接拨打 110 或 96110 反诈专线。'
+    };
   },
 
   /* ===== 识别后联动（家庭预警已通过云函数自动写入 familyAlerts） ===== */

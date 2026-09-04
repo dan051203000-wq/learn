@@ -1,0 +1,9 @@
+{
+  "name": "aiSummary",
+  "version": "1.0.0",
+  "description": "老年人防诈骗小程序 - 家庭预警 AI 摘要",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "^4.0.2"
+  }
+}

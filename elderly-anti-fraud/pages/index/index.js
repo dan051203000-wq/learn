@@ -110,5 +110,11 @@ Page({
     wx.navigateTo({
       url: `/pages/cases/cases?id=${id}`
     });
+  },
+
+  goAiChat() {
+    wx.navigateTo({
+      url: '/pages/aiChat/aiChat'
+    });
   }
 });

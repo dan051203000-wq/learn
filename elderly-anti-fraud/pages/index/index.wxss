@@ -217,6 +217,10 @@
   background: linear-gradient(135deg, #fff3e0, #ffe0b2);
 }
 
+.feature-item-blue {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+}
+
 .feature-item:active {
   transform: scale(0.97);
 }
