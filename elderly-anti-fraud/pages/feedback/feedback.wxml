@@ -1,0 +1,62 @@
+<view class="container">
+  <view class="page-header">
+    <view class="page-title">💬 意见反馈</view>
+    <view class="page-subtitle">您的建议是我们改进的动力。遇到问题或想提建议，请告诉我们。</view>
+  </view>
+
+  <!-- 反馈类型 -->
+  <view class="section-card">
+    <view class="section-title">📌 请选择反馈类型</view>
+    <view class="type-grid">
+      <view
+        class="type-btn {{feedbackType === item.value ? 'active' : ''}}"
+        wx:for="{{types}}"
+        wx:key="value"
+        bindtap="selectType"
+        data-value="{{item.value}}"
+      >
+        <view class="type-icon">{{item.icon}}</view>
+        <view class="type-text">{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 反馈内容 -->
+  <view class="section-card">
+    <view class="section-title">📝 详细描述</view>
+    <textarea
+      class="feedback-textarea"
+      placeholder="请描述您遇到的问题或想提的建议（500字内）"
+      maxlength="500"
+      bindinput="onContentInput"
+      value="{{content}}"
+    />
+    <view class="char-count">{{content.length}}/500 字</view>
+  </view>
+
+  <!-- 联系方式（可选） -->
+  <view class="section-card">
+    <view class="section-title">📞 联系方式（可选）</view>
+    <view class="contact-tip">如希望我们回复您，请填写手机号或微信号</view>
+    <input
+      class="contact-input"
+      placeholder="手机号 / 微信号（选填）"
+      maxlength="50"
+      bindinput="onContactInput"
+      value="{{contact}}"
+    />
+  </view>
+
+  <!-- 隐私说明 -->
+  <view class="privacy-tip">
+    🛡️ 您填写的反馈会存储在云端，敏感信息（如身份证号、银行卡号）会被自动屏蔽。反馈保留 90 天后自动清理。
+  </view>
+
+  <!-- 提交按钮 -->
+  <button class="submit-btn" bindtap="submitFeedback" hover-class="btn-hover" disabled="{{submitting}}">
+    <text class="submit-icon">📤</text>
+    <text class="submit-text">{{submitting ? '提交中...' : '提交反馈'}}</text>
+  </button>
+
+  <view class="footer-blank"></view>
+</view>

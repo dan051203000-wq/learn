@@ -203,5 +203,11 @@ Page({
     wx.navigateTo({
       url: '/pages/about/about?tab=privacy'
     });
+  },
+
+  openFeedback() {
+    wx.navigateTo({
+      url: '/pages/feedback/feedback'
+    });
   }
 });

@@ -1,0 +1,9 @@
+{
+  "name": "getKeywords",
+  "version": "1.0.0",
+  "description": "读取最新诈骗关键词库（识别云函数调用此函数获取热更的关键词）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

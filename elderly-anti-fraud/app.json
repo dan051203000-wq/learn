@@ -8,7 +8,8 @@
     "pages/knowledge/knowledge",
     "pages/report/report",
     "pages/profile/profile",
-    "pages/about/about"
+    "pages/about/about",
+    "pages/feedback/feedback"
   ],
   "window": {
     "backgroundTextStyle": "light",

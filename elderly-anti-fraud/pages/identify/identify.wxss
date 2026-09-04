@@ -415,6 +415,32 @@
   margin-bottom: 20rpx;
 }
 
+/* ===== 免责声明（关键：避免虚假安全感） ===== */
+.disclaimer-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  margin-top: 28rpx;
+  padding: 28rpx 24rpx;
+  background-color: #fff8e1;
+  border-left: 8rpx solid #f57c00;
+  border-radius: 16rpx;
+}
+
+.disclaimer-icon {
+  font-size: 32rpx;
+  flex-shrink: 0;
+  margin-top: 2rpx;
+}
+
+.disclaimer-text {
+  font-size: 28rpx;
+  line-height: 1.7;
+  color: #5d4037;
+  flex: 1;
+  font-weight: 500;
+}
+
 .action-btn {
   flex: 1;
   border: none;

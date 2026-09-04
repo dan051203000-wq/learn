@@ -1,0 +1,9 @@
+{
+  "name": "cleanupTimer",
+  "version": "1.0.0",
+  "description": "数据保留策略定时清理：识别历史7天/举报图片30天/反馈90天",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

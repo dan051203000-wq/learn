@@ -133,6 +133,12 @@
         <view class="action-text">告诉家里人</view>
       </button>
     </view>
+
+    <!-- 重要免责声明（避免虚假安全感） -->
+    <view class="disclaimer-card" wx:if="{{result.disclaimer}}">
+      <view class="disclaimer-icon">ℹ️</view>
+      <view class="disclaimer-text">{{result.disclaimer}}</view>
+    </view>
   </view>
 
   <!-- 历史记录 -->

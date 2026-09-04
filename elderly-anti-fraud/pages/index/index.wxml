@@ -97,6 +97,11 @@
     <view>暂无非紧急预警，请保持警惕</view>
   </view>
 
+  <!-- 通用免责说明（避免虚假安全感） -->
+  <view class="footer-disclaimer">
+    ℹ️ 本工具识别基于关键词匹配，结果仅供参考。未检测到风险 ≠ 绝对安全，重要情况请通过官方渠道核实。
+  </view>
+
   <!-- 底部留白避免被 tabBar 遮挡 -->
   <view class="footer-blank"></view>
 </view>
