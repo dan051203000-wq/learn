@@ -91,7 +91,7 @@ exports.main = async (event, context) => {
     const startTime = Date.now();
     const res = await model.generateText({
       data: {
-        model: 'hunyuan-turbos-latest',
+        model: 'hy3',  // 混元新模型名（hunyuan-turbos-latest 已废弃）
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMsg }

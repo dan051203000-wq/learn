@@ -64,7 +64,7 @@ exports.main = async (event, context) => {
     const startTime = Date.now();
     const res = await model.generateText({
       data: {
-        model: 'hunyuan-turbos-latest',  // 混元 turbo 版，平衡速度与质量
+        model: 'hy3',  // 混元新模型名（原 hunyuan-turbos-latest 已废弃）
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: `请判断以下${source === 'image' ? '图片中提取的' : ''}信息是否为诈骗：\n\n「${trimmedText}」` }
