@@ -46,8 +46,8 @@
 /* ===== 输入方式 ===== */
 .input-method {
   display: flex;
-  gap: 20rpx;
-  padding: 24rpx;
+  gap: 12rpx;
+  padding: 12rpx;
   margin-top: -30rpx;
   position: relative;
   z-index: 2;
@@ -56,8 +56,8 @@
 .method-btn {
   flex: 1;
   background: white;
-  border-radius: 24rpx;
-  padding: 28rpx 20rpx;
+  border-radius: 20rpx;
+  padding: 16rpx 12rpx;
   text-align: center;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
   transition: all 0.2s;
@@ -74,8 +74,8 @@
 }
 
 .method-icon {
-  font-size: 56rpx;
-  margin-bottom: 12rpx;
+  font-size: 40rpx;
+  margin-bottom: 6rpx;
 }
 
 .method-text {
