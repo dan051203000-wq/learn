@@ -1,4 +1,4 @@
-<view class="container {{fontLarge ? 'font-large' : ''}}">
+<view class="container font-scale-{{fontScale}}">
   <!-- 用户信息 -->
   <view class="user-card">
     <view class="user-avatar">{{nickName[0]}}</view>
@@ -27,15 +27,77 @@
     </view>
   </view>
 
+  <!-- AI 防护画像（基于识别历史，每周生成一次） -->
+  <view class="profile-card">
+    <view class="profile-head">
+      <view class="profile-title">🛡️ 我的防护画像</view>
+      <view class="profile-ai" wx:if="{{profileAiPowered}}">🤖 混元 AI</view>
+    </view>
+
+    <!-- 生成中 -->
+    <view wx:if="{{profileLoading}}" class="profile-loading">
+      <view class="profile-loading-text">AI 正在分析您的识别记录...</view>
+    </view>
+
+    <!-- 无识别记录 -->
+    <view wx:elif="{{profileEmpty}}" class="profile-empty">
+      <view class="profile-empty-text">{{profileEmptyMsg}}</view>
+      <view class="profile-empty-btn" bindtap="goIdentify">🔍 去识别一条</view>
+    </view>
+
+    <!-- 画像内容 -->
+    <view wx:elif="{{profile}}">
+      <view class="profile-summary">{{profile.summary}}</view>
+
+      <view class="profile-section">
+        <view class="profile-sub-title">⚠️ 您最常遇到的诈骗类型</view>
+        <view class="profile-tags">
+          <view class="profile-tag" wx:for="{{profile.weakTypes}}" wx:key="*this">{{item}}</view>
+        </view>
+      </view>
+
+      <view class="profile-section">
+        <view class="profile-sub-title">✅ 给您的专属建议</view>
+        <view class="profile-list">
+          <view class="profile-list-item" wx:for="{{profile.suggestions}}" wx:key="*this">
+            <view class="profile-bullet">{{index + 1}}</view>
+            <view class="profile-list-text">{{item}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="profile-encour">{{profile.encouragement}}</view>
+
+      <view class="profile-meta">
+        <view class="profile-meta-text">基于 {{profile.totalChecks}} 次识别 · 高风险 {{profile.highRiskCount}} 次{{profileCached ? ' · 本周已生成' : ''}}</view>
+        <view class="profile-refresh" bindtap="refreshProfile">🔄 重新分析</view>
+      </view>
+    </view>
+
+    <!-- 兜底 -->
+    <view wx:else class="profile-loading">
+      <view class="profile-loading-text">画像生成失败，可点"重新分析"重试</view>
+      <view class="profile-empty-btn" bindtap="refreshProfile">🔄 重新分析</view>
+    </view>
+  </view>
+
   <!-- 适老化设置 -->
   <view class="section-card">
     <view class="section-title">⚙️ 适老化设置</view>
-    <view class="setting-item">
+    <view class="setting-item setting-item-column">
       <view class="setting-left">
-        <view class="setting-title">🔍 大字模式</view>
-        <view class="setting-desc">放大页面文字，看得更清楚</view>
+        <view class="setting-title">🔍 字号</view>
+        <view class="setting-desc">三档可调，看得更清楚</view>
       </view>
-      <switch checked="{{fontLarge}}" color="#2196F3" bindchange="toggleFont" />
+      <view class="font-segmented">
+        <view
+          class="font-seg-item {{fontScale === item.scale ? 'font-seg-active' : ''}}"
+          wx:for="{{fontOptions}}"
+          wx:key="scale"
+          bindtap="setFontScale"
+          data-scale="{{item.scale}}"
+        >{{item.label}}</view>
+      </view>
     </view>
   </view>
 

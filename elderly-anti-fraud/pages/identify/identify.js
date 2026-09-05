@@ -1,6 +1,5 @@
-// 识别页面：粘贴文字/上传图片 → 调云函数识别 → 大色块结果 → 朗读/保存/举报
-// 注：TTS 朗读功能依赖微信「同声传译」插件（仅企业/认证主体可用）。
-// 个人主体小程序暂不支持该插件，UI 上保留按钮但点击提示「暂未开放」。
+// 识别页面：粘贴文字/上传图片 → 调云函数识别 → 大色块结果 → 保存/举报
+// 注：语音输入用微信键盘自带🎤（无需插件），朗读功能等待后续开放。
 
 Page({
   data: {
@@ -11,13 +10,12 @@ Page({
     result: {},
     history: [],
     speaking: false, // 是否在朗读
-    evidenceFileId: '', // 拍照存证返回的 fileID
-    ttsAvailable: false // TTS 是否可用（个人主体小程序为 false）
+    evidenceFileId: '' // 拍照存证返回的 fileID
   },
 
   onLoad() {
     this.loadHistory();
-    this.initTTS();
+    // TTS 朗读暂不开放（WechatSI 插件个人主体无法添加），initTTS 保留但静默
   },
 
   onUnload() {
@@ -334,20 +332,11 @@ Page({
     // 显示历史记录详情
   },
 
-  /* ===== TTS 朗读（适配老人看不清字） ===== */
+  /* ===== TTS 朗读（等待插件权限开放，暂时静默占位） ===== */
   initTTS() {
-    if (!this._ttsAudio) {
-      this._ttsAudio = wx.createInnerAudioContext();
-      this._ttsAudio.onEnded(() => {
-        this.setData({ speaking: false });
-      });
-      this._ttsAudio.onError((err) => {
-        console.warn('TTS 播放失败', err);
-        this.setData({ speaking: false });
-        wx.showToast({ title: '朗读失败', icon: 'none' });
-      });
-    }
-    // 探测插件是否可用（个人主体小程序 requirePlugin 会失败/抛错）
+    // WechatSI 插件个人主体无法添加，此处静默
+    // 后续如果插件权限开放，取消下面注释即可启用
+    /*
     try {
       const plugin = requirePlugin('WechatSI');
       this._ttsPlugin = plugin;
@@ -356,51 +345,15 @@ Page({
       this._ttsPlugin = null;
       this.setData({ ttsAvailable: false });
     }
+    */
   },
 
   speakResult() {
-    const r = this.data.result;
-    if (!r) return;
-    this.initTTS();
-    const plugin = this._ttsPlugin;
-    if (!plugin || typeof plugin.textToSpeech !== 'function') {
-      // 个人主体小程序走不到这里，但仍保留兜底
-      wx.showModal({
-        title: '朗读功能暂未开放',
-        content: '本工具为个人主体小程序，「语音朗读」依赖微信「同声传译」插件，仅企业/认证主体可用。\n\n建议把识别结果截图发给您信任的家人，请他们念给您听。',
-        showCancel: false,
-        confirmText: '我知道了'
-      });
-      return;
-    }
-
-    // 拼接朗读文本：风险标题 + 等级 + 怎么骗 + 怎么识别 + 怎么办
-    const text = [
-      '风险提示：' + (r.riskTitle || ''),
-      '风险等级：' + (r.riskLevelText || ''),
-      '骗子是怎么骗的：' + (r.fraudMethod || ''),
-      '怎么识别：' + ((r.features || []).join('，')),
-      '您应该这样做：' + ((r.countermeasures || []).join('，'))
-    ].join('。');
-
-    this.setData({ speaking: true });
-    plugin.textToSpeech({
-      lang: 'zh_CN',
-      tts: true,
-      content: text,
-      success: (res) => {
-        if (res && res.filename) {
-          this._ttsAudio.src = res.filename;
-          this._ttsAudio.play();
-        } else {
-          this.setData({ speaking: false });
-        }
-      },
-      fail: (err) => {
-        console.warn('TTS 调用失败', err);
-        this.setData({ speaking: false });
-        wx.showToast({ title: '朗读功能暂不可用', icon: 'none' });
-      }
+    wx.showModal({
+      title: '朗读功能即将上线',
+      content: '语音朗读功能正在等待插件权限开放，暂不可用。建议把识别结果截图发给家人，请他们念给您听。',
+      showCancel: false,
+      confirmText: '我知道了'
     });
   },
 

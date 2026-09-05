@@ -1,8 +1,8 @@
-<view class="container {{fontLarge ? 'font-large' : ''}}">
+<view class="container font-scale-{{fontScale}}">
   <!-- 顶部标题区 -->
   <view class="hero">
-    <view class="hero-icon">🛡️</view>
-    <view class="hero-title">防诈骗互助</view>
+    <image class="hero-logo" src="/assets/logo_generated.jpg" mode="aspectFill" />
+    <view class="hero-title">银发守护宝</view>
     <view class="hero-sub">社区辅助工具 · 非官方应用</view>
   </view>
 
@@ -20,6 +20,20 @@
       <view class="bullet">• 已经向陌生人转账或泄露验证码</view>
       <view class="bullet">• 被威胁恐吓要求保密、独自处理</view>
       <view class="bullet">• 对方自称公检法要求"配合调查"</view>
+    </view>
+  </view>
+
+  <!-- 社会价值叙事：为什么做这个 -->
+  <view class="card card-mission">
+    <view class="card-title">
+      <view class="card-title-bar mission"></view>
+      💙 为什么做这个
+    </view>
+    <view class="card-body">
+      <view class="text-row mission-quote">"我妈接到一个自称公安局的电话，差点把养老钱转出去。挂了电话她哭着问我'怎么知道是不是真的'——那一刻我决定做这个工具。"</view>
+      <view class="text-row"><text class="label-bold">现实有多严重：</text>据公安部公布的数据，电信网络诈骗已成为近年来发案最多、群众反映最强烈的犯罪类型之一，每年造成的财产损失以百亿计。60 岁以上老年群体因对智能手机操作不熟、识别能力较弱，往往损失更大、追回更难。</view>
+      <view class="text-row"><text class="label-bold">我们的初心：</text>用 AI 把"看不懂的可疑信息"翻译成老人能听懂的话；用周画像让子女远程看见父母的薄弱点；用一键救援给已经转账的老人最及时的步骤指引。把科技变成老人的第二道防线。</view>
+      <view class="text-row"><text class="label-bold">为什么叫"银发守护宝"：</text>"银发"指老人长辈；"守护"是家人联动的核心；"宝"既指老人是家里的宝，也取"守护之宝器"意——一个能帮老人识破骗局的随身工具。</view>
     </view>
   </view>
 
@@ -95,9 +109,24 @@
     </view>
   </view>
 
+  <!-- 评委/演示用：一键加载演示数据 -->
+  <view class="card">
+    <view class="card-title">
+      <view class="card-title-bar"></view>
+      🎬 演示数据
+    </view>
+    <view class="card-body">
+      <view class="text-row">一键给当前账号填充 8 条识别历史 + 2 条举报 + 1 条家庭预警，让 AI 防护画像、统计、家庭守护立刻有内容可看。</view>
+      <view class="text-row small">⚠️ 演示用：会覆盖当前账号的同类数据；正式使用时请勿点击。</view>
+      <view class="demo-btn {{seedingDemo ? 'demo-btn-loading' : ''}}" bindtap="loadDemoData">
+        {{seedingDemo ? '加载中...' : '🎬 一键加载演示数据'}}
+      </view>
+    </view>
+  </view>
+
   <!-- 版本信息 -->
   <view class="footer">
-    <view class="footer-version">防诈骗互助 v1.1.0</view>
+    <view class="footer-version">银发守护宝 v1.1.0</view>
     <view class="footer-tip">让科技守护每一位长辈</view>
   </view>
 

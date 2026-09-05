@@ -1,0 +1,9 @@
+{
+  "name": "aiProfile",
+  "version": "1.0.0",
+  "description": "老年人防诈骗小程序 - 基于识别历史生成个性化防护画像（周缓存控额度）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "^4.0.2"
+  }
+}

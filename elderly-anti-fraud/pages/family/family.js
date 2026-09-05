@@ -174,24 +174,45 @@ Page({
       data: { action: 'getFamilyAlerts', limit: 20 },
       success: res => {
         if (res.result && res.result.success && res.result.data.length > 0) {
-          const recentEvents = res.result.data.map(item => ({
-            elderName: item.elderName || '长辈',
-            action: '识别了一条可疑信息',
-            result: item.riskTitle || '',
-            riskLevel: item.riskLevel || 'none',
-            snippet: item.snippet || '',
-            fraudMethod: item.fraudMethod || '',
-            time: this.formatTime(item.timestamp)
-          }));
-          this.setData({ recentEvents, alertCount: recentEvents.length });
-          // 拉到预警后调 AI 摘要
+          // 把救援预警和普通预警分开：救援预警单独置顶展示
+          const rescueEvents = [];
+          const recentEvents = [];
+          for (const item of res.result.data) {
+            const ev = {
+              elderName: item.elderName || '长辈',
+              action: '识别了一条可疑信息',
+              result: item.riskTitle || '',
+              riskLevel: item.riskLevel || 'none',
+              snippet: item.snippet || '',
+              fraudMethod: item.fraudMethod || '',
+              time: this.formatTime(item.timestamp)
+            };
+            if (item.riskLevel === 'rescue') {
+              rescueEvents.push(ev);
+            } else {
+              recentEvents.push(ev);
+            }
+          }
+          this.setData({
+            recentEvents,
+            rescueEvents,
+            alertCount: recentEvents.length,
+            rescueCount: rescueEvents.length
+          });
+          // 拉到预警后调 AI 摘要（只对普通预警做摘要，救援不摘要）
           this.loadAISummary(recentEvents);
         } else {
-          this.setData({ recentEvents: [], alertCount: 0, aiSummary: '' });
+          this.setData({
+            recentEvents: [],
+            alertCount: 0,
+            aiSummary: '',
+            rescueEvents: [],
+            rescueCount: 0
+          });
         }
       },
       fail: () => {
-        this.setData({ recentEvents: [], alertCount: 0 });
+        this.setData({ recentEvents: [], alertCount: 0, rescueEvents: [], rescueCount: 0 });
       }
     });
   },

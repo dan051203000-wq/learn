@@ -37,15 +37,48 @@ const FALLBACK_RESPONSES = [
   '我建议您把可疑内容发给儿女或身边信任的人看一眼，比我分析更靠谱。⚠️ 紧急情况请直接拨打 110 或反诈专线 96110'
 ];
 
+// 救援模式系统提示词：老人疑似已转账/已损失时切换
+const RESCUE_SYSTEM_PROMPT = `你是「反诈紧急救援员」，专门帮助已经把钱转出去、可能已经被骗的中国老人。此刻老人非常焦虑、害怕、自责，你的每一句话都要稳住他。
+
+【说话风格】
+- 称呼"您"或"老人家"，像家人一样温和坚定
+- 不责怪老人"怎么这么糊涂"，绝不二次伤害
+- 每次回复控制在 120 字以内，句子短、节奏慢
+- 用大白话，不要法律/金融术语
+
+【必须按顺序引导老人做这些事】
+1. 先稳住情绪："钱转出去不一定是您的错，骗子专门设计套路骗人，我们先冷静处理"
+2. 立即止付：让老人马上拨打银行客服电话冻结账户（说出常见银行客服号）
+3. 立即报警：拨打 110 或反诈专线 96110
+4. 保存证据：转账记录、聊天截图、对方账号都别删
+5. 联系家人：让老人立刻告诉子女或身边信任的人
+
+【绝对禁止】
+- 不要给老人"钱一定能追回来"的承诺（追回与否取决于警方和银行，不能打包票）
+- 不要让老人自己处理（必须让他联系家人或警方）
+- 不要讨论与本次救援无关的话题
+- 回复结尾必须加："⚠️ 现在请立即拨打 110 或 96110，并联系您的家人"
+
+【输出格式】直接回复文字，不要 JSON、不要 markdown 标题。`;
+
+const RESCUE_FALLBACK_RESPONSES = [
+  '老人家，钱转出去不一定是您的错，是骗子太狡猾。请您现在马上做三件事：① 打您银行卡背面的客服电话，说"我被骗了，请冻结账户"；② 拨打 110 或 96110 报警；③ 把转账记录和聊天截图都留着别删。⚠️ 现在请立即拨打 110 或 96110，并联系您的家人',
+  '我现在回复慢一些，但这件事不能等：① 立刻打银行客服冻结账户；② 拨打 110 报警；③ 把骗子的电话、账号、聊天记录都截图保存；④ 立刻告诉您的子女或家人。⚠️ 现在请立即拨打 110 或 96110，并联系您的家人'
+];
+
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
-  const { message, sessionId = 'default' } = event;
+  const { message, sessionId = 'default', mode = 'normal' } = event;
+
+  const isRescue = mode === 'rescue';
+  const systemPrompt = isRescue ? RESCUE_SYSTEM_PROMPT : SYSTEM_PROMPT;
+  const fallbacks = isRescue ? RESCUE_FALLBACK_RESPONSES : FALLBACK_RESPONSES;
+  const emptyFallback = isRescue
+    ? '老人家，您先把刚发生的事简单说给我听：转给了谁、转了多少、用什么方式转的？我帮您理一理下一步。⚠️ 现在请立即拨打 110 或 96110，并联系您的家人'
+    : '老人家，您想说点什么？把收到的短信内容念给我听就行。⚠️ 紧急情况请直接拨打 110 或反诈专线 96110';
 
   if (!message || typeof message !== 'string' || !message.trim()) {
-    return {
-      success: false,
-      reply: '老人家，您想说点什么？把收到的短信内容念给我听就行。⚠️ 紧急情况请直接拨打 110 或反诈专线 96110'
-    };
+    return { success: false, reply: emptyFallback, mode };
   }
 
   // 限制单次输入长度
@@ -60,10 +93,10 @@ exports.main = async (event, context) => {
       data: {
         model: 'hunyuan-turbos-latest',
         messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'system', content: systemPrompt },
           { role: 'user', content: userMsg }
         ],
-        temperature: 0.7  // 对话需要点温度，让回复更自然
+        temperature: isRescue ? 0.4 : 0.7  // 救援模式温度更低，话术更稳定
       },
       timeout: 30000
     });
@@ -80,16 +113,17 @@ exports.main = async (event, context) => {
 
     // 兜底：回复为空
     if (!reply || reply.trim().length === 0) {
-      reply = FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
+      reply = fallbacks[Math.floor(Math.random() * fallbacks.length)];
     }
 
-    // 兜底：去掉 markdown 残留（老人看星号会很奇怪）
+    // 兜底：去掉 markdown 拋留（老人看星号会很奇怪）
     reply = reply.replace(/\*\*/g, '').replace(/\*/g, '').replace(/#{1,6}\s/g, '');
 
     return {
       success: true,
       aiPowered: true,
       reply: reply.substring(0, 500),
+      mode,
       costMs,
       callerOpenId: wxContext.OPENID || ''
     };
@@ -99,7 +133,8 @@ exports.main = async (event, context) => {
     return {
       success: false,
       aiPowered: false,
-      reply: FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)],
+      mode,
+      reply: fallbacks[Math.floor(Math.random() * fallbacks.length)],
       error: err.message || 'AI 调用失败'
     };
   }

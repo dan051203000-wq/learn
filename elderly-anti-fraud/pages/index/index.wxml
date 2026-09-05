@@ -9,10 +9,33 @@
           <view class="header-sub">遇到可疑信息，先来识别一下</view>
         </view>
       </view>
+      <image class="header-logo" src="/assets/logo_generated.jpg" mode="aspectFill" />
     </view>
     <view class="header-title">保护您的钱袋子</view>
     <view class="header-tip">陌生链接不点  验证码不给  汇款先核实</view>
     <view class="header-disclaimer">⚠️ 本工具为社区辅助应用，重要情况请拨打 96110 核实</view>
+  </view>
+
+  <!-- 首屏焦点：3 大 AI 亮点入口 -->
+  <view class="hero-highlights">
+    <view class="hero-card hero-card-blue" bindtap="goProfile">
+      <view class="hero-card-icon">🛡️</view>
+      <view class="hero-card-body">
+        <view class="hero-card-title">AI 防护画像</view>
+        <view class="hero-card-sub">基于您的识别记录 · 每周生成个性化防诈建议</view>
+      </view>
+      <view class="hero-card-tag">🤖 混元 AI</view>
+    </view>
+
+    <view class="hero-card hero-card-red" bindtap="goRescue">
+      <view class="hero-card-pulse"></view>
+      <view class="hero-card-icon">🚨</view>
+      <view class="hero-card-body">
+        <view class="hero-card-title">我可能已经被骗了</view>
+        <view class="hero-card-sub">紧急救援模式 · AI 步骤指引 · 一键拨 110</view>
+      </view>
+      <view class="hero-card-tag hero-card-tag-urgent">立即救援</view>
+    </view>
   </view>
 
   <!-- 4 大核心功能 -->

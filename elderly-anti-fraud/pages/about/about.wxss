@@ -33,6 +33,21 @@
   z-index: 1;
 }
 
+/* Logo 圆形徽章（白底包圆，在蓝色 hero 上自然过渡） */
+.hero-logo {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 50%;
+  background: white;
+  margin: 0 auto 20rpx;
+  display: block;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.18), 0 0 0 6rpx rgba(255, 255, 255, 0.25);
+  border: 6rpx solid white;
+  box-sizing: border-box;
+}
+
 .hero-title {
   font-size: 48rpx;
   font-weight: bold;
@@ -69,6 +84,33 @@
 .card-warning {
   background: linear-gradient(135deg, #fff8e1, #ffecb3);
   border-left: 8rpx solid #ffa726;
+}
+
+/* 社会价值叙事卡（暖色调，区别于普通卡片） */
+.card-mission {
+  background: linear-gradient(135deg, #fff3f4, #ffe5e8);
+  border-left: 8rpx solid #e53935;
+}
+
+.card-title-bar.mission {
+  background: linear-gradient(180deg, #e53935, #c62828);
+}
+
+.mission-quote {
+  font-style: italic;
+  font-size: 30rpx;
+  color: #5d4037;
+  padding: 16rpx 20rpx;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  line-height: 1.7;
+  border-left: 4rpx solid #e53935;
+}
+
+.label-bold {
+  font-weight: bold;
+  color: #1a1a1a;
 }
 
 .card-title {
@@ -228,7 +270,72 @@
   height: 40rpx;
 }
 
-/* ===== 大字模式（适老化联动） ===== */
+/* ===== 演示数据按钮 ===== */
+.demo-btn {
+  display: block;
+  margin: 24rpx 0 8rpx;
+  padding: 24rpx 0;
+  text-align: center;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+  color: white;
+  font-size: 32rpx;
+  font-weight: bold;
+  border-radius: 20rpx;
+  box-shadow: 0 6rpx 16rpx rgba(33, 150, 243, 0.3);
+  transition: all 0.2s;
+}
+
+.demo-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(33, 150, 243, 0.3);
+}
+
+.demo-btn-loading {
+  background: #b0bec5;
+  box-shadow: none;
+}
+
+/* ===== 三档大字（适老化联动） ===== */
+.font-scale-large .card-title,
+.font-scale-xl .card-title {
+  font-size: 38rpx;
+}
+
+.font-scale-xl .card-title {
+  font-size: 42rpx;
+}
+
+.font-scale-large .text-row,
+.font-scale-large .bullet,
+.font-scale-xl .text-row,
+.font-scale-xl .bullet {
+  font-size: 32rpx;
+}
+
+.font-scale-xl .text-row,
+.font-scale-xl .bullet {
+  font-size: 36rpx;
+}
+
+.font-scale-large .text-row.small,
+.font-scale-xl .text-row.small {
+  font-size: 30rpx;
+}
+
+.font-scale-xl .text-row.small {
+  font-size: 34rpx;
+}
+
+.font-scale-large .tech .kv,
+.font-scale-xl .tech .kv {
+  font-size: 30rpx;
+}
+
+.font-scale-xl .tech .kv {
+  font-size: 34rpx;
+}
+
+/* 老别名兼容 */
 .font-large .card-title {
   font-size: 38rpx;
 }

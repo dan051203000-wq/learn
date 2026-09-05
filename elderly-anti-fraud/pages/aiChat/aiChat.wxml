@@ -1,16 +1,31 @@
-<!-- AI 反诈顾问页面：对话气泡 + 快捷提问 -->
-<view class="page">
+<!-- AI 反诈顾问页面：对话气泡 + 快捷提问 + 紧急救援 -->
+<view class="page {{mode === 'rescue' ? 'page-rescue' : ''}}">
 
   <!-- 顶部说明卡（避免老人以为是真人） -->
-  <view class="ai-banner">
+  <view class="ai-banner {{mode === 'rescue' ? 'ai-banner-rescue' : ''}}">
     <view class="ai-banner-left">
-      <view class="ai-banner-icon">🤖</view>
+      <view class="ai-banner-icon">{{mode === 'rescue' ? '🚨' : '🤖'}}</view>
       <view class="ai-banner-info">
-        <view class="ai-banner-title">AI 反诈顾问</view>
-        <view class="ai-banner-sub">遇到可疑情况，随时问我</view>
+        <view class="ai-banner-title">{{mode === 'rescue' ? '紧急救援中' : 'AI 反诈顾问'}}</view>
+        <view class="ai-banner-sub">{{mode === 'rescue' ? '按提示一步步做，别慌' : '遇到可疑情况，随时问我'}}</view>
       </view>
     </view>
     <view class="ai-banner-tag">腾讯混元 AI</view>
+  </view>
+
+  <!-- 救援模式：顶部固定操作条（一键拨打 + 退出） -->
+  <view class="rescue-bar" wx:if="{{mode === 'rescue'}}">
+    <view class="rescue-call" bindtap="callPolice">
+      <view class="rescue-call-icon">📞</view>
+      <view class="rescue-call-text">立即拨 110</view>
+    </view>
+    <view class="rescue-exit" bindtap="exitRescue">退出救援</view>
+  </view>
+
+  <!-- 普通模式：常驻救援入口（醒目红色，防老人找不到） -->
+  <view class="rescue-entry" wx:else bindtap="enterRescue">
+    <view class="rescue-entry-icon">🚨</view>
+    <view class="rescue-entry-text">我可能已经把钱转出去了 →</view>
   </view>
 
   <!-- 对话区 -->
@@ -44,8 +59,8 @@
     </view>
   </scroll-view>
 
-  <!-- 快捷提问（老人不知道问什么时点这些） -->
-  <view class="quick-questions" wx:if="{{messages.length <= 2}}">
+  <!-- 普通模式：快捷提问 -->
+  <view class="quick-questions" wx:if="{{mode === 'normal' && messages.length <= 2}}">
     <view class="quick-title">💡 您可以这样问：</view>
     <view class="quick-grid">
       <view class="quick-item" bindtap="askQuick" data-q="我收到短信说我医保账户要冻结，让我转账到安全账户，是真的吗？">
@@ -67,10 +82,21 @@
     </view>
   </view>
 
+  <!-- 救援模式：追问 chips（让老人不用打字就能继续问） -->
+  <view class="quick-questions rescue-chips" wx:if="{{mode === 'rescue'}}">
+    <view class="quick-title rescue-chips-title">您可能还想问：</view>
+    <view class="rescue-chips-list">
+      <view class="rescue-chip" wx:for="{{rescueChips}}" wx:key="q" bindtap="askQuick" data-q="{{item.q}}">
+        <view class="rescue-chip-icon">{{item.icon}}</view>
+        <view class="rescue-chip-text">{{item.q}}</view>
+      </view>
+    </view>
+  </view>
+
   <!-- 输入区 -->
   <view class="input-bar">
     <input class="input" placeholder="问点什么…（比如：医保冻结能信吗）" value="{{inputText}}" bindinput="onInput" confirm-type="send" bindconfirm="send" maxlength="500" />
-    <button class="send-btn" bindtap="send" disabled="{{loading || !inputText.trim()}}">
+    <button class="send-btn" bindtap="send" disabled="{{loading || !inputText}}">
       <text wx:if="{{!loading}}">发送</text>
       <text wx:else>…</text>
     </button>

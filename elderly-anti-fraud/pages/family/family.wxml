@@ -71,6 +71,20 @@
 
   <!-- 我是守护者：绑定 + 成员列表 -->
   <block wx:if="{{role === 'guardian'}}">
+    <!-- 紧急救援横幅（老人端触发了救援模式） -->
+    <view class="rescue-banner" wx:if="{{rescueCount > 0}}">
+      <view class="rescue-banner-pulse"></view>
+      <view class="rescue-banner-icon">🚨</view>
+      <view class="rescue-banner-body">
+        <view class="rescue-banner-title">紧急救援提醒</view>
+        <view class="rescue-banner-text" wx:for="{{rescueEvents}}" wx:key="index">
+          {{item.elderName}} 在 {{item.time}} 触发了紧急救援模式：{{item.snippet}}
+        </view>
+        <view class="rescue-banner-action">请立刻电话联系老人确认情况，必要时拨打 110</view>
+      </view>
+      <view class="rescue-banner-call" bindtap="callHotline">📞</view>
+    </view>
+
     <view class="bind-card">
       <view class="bind-title">➕ 绑定要守护的家人</view>
       <view class="bind-desc">请长辈打开小程序的"家庭守护"，生成并告知您守护码</view>

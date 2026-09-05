@@ -2,15 +2,19 @@
 Page({
   data: {
     nickName: '我',
-    fontLarge: false,
+    fontScale: 'normal',  // 适老化三档：'normal' 标准 / 'large' 大字 / 'xl' 超大字
     stats: {
       identifyCount: 0,
       reportCount: 0,
       learnDays: 1
     },
     history: [],
-    settings: [
-      { key: 'fontLarge', title: '大字模式', desc: '放大页面文字，看得更清楚', icon: '🔍' }
+    profile: null,          // AI 防护画像
+    profileLoading: false,  // 画像生成中
+    fontOptions: [
+      { scale: 'normal', label: '标准' },
+      { scale: 'large', label: '大字' },
+      { scale: 'xl', label: '超大字' }
     ],
     menuList: [
       { title: '我的举报记录', icon: '📋', url: '/pages/report/report' },
@@ -21,7 +25,7 @@ Page({
 
   onLoad() {
     this.setData({
-      fontLarge: wx.getStorageSync('fontLarge') || false
+      fontScale: this.readFontScale()
     });
     this.loadUserInfo();
   },
@@ -30,6 +34,7 @@ Page({
     this.loadUserInfo();
     this.loadHistory();
     this.loadStats();
+    this.loadProfile();
   },
 
   loadUserInfo() {
@@ -79,6 +84,75 @@ Page({
     });
   },
 
+  /* ===== AI 防护画像（基于识别历史，每周缓存一次，控额度） ===== */
+  loadProfile() {
+    const userId = getApp().globalData.openId || wx.getStorageSync('userId');
+    if (!userId) return;
+    this.setData({ profileLoading: true });
+
+    wx.cloud.callFunction({
+      name: 'aiProfile',
+      data: { userId },
+      success: res => {
+        const r = res.result || {};
+        if (r.success) {
+          this.setData({
+            profile: r.empty ? null : (r.profile || null),
+            profileEmpty: !!r.empty,
+            profileEmptyMsg: r.empty ? r.message : '',
+            profileAiPowered: !!r.aiPowered,
+            profileCached: !!r.cached,
+            profileLoading: false
+          });
+        } else {
+          this.setData({ profile: null, profileLoading: false });
+        }
+      },
+      fail: () => {
+        this.setData({ profile: null, profileLoading: false });
+      }
+    });
+  },
+
+  /* 强制刷新画像（本周重新生成一次，会消耗一次 AI 调用） */
+  refreshProfile() {
+    const userId = getApp().globalData.openId || wx.getStorageSync('userId');
+    if (!userId) return;
+    wx.showModal({
+      title: '重新生成画像',
+      content: '会重新调用 AI 分析，确定吗？',
+      success: r => {
+        if (!r.confirm) return;
+        this.setData({ profileLoading: true });
+        wx.cloud.callFunction({
+          name: 'aiProfile',
+          data: { userId, force: true },
+          success: res => {
+            const rr = res.result || {};
+            if (rr.success) {
+              this.setData({
+                profile: rr.empty ? null : (rr.profile || null),
+                profileEmpty: !!rr.empty,
+                profileEmptyMsg: rr.empty ? rr.message : '',
+                profileAiPowered: !!rr.aiPowered,
+                profileCached: false,
+                profileLoading: false
+              });
+              wx.showToast({ title: '画像已更新', icon: 'success' });
+            } else {
+              this.setData({ profileLoading: false });
+              wx.showToast({ title: rr.error || '生成失败', icon: 'none' });
+            }
+          },
+          fail: () => {
+            this.setData({ profileLoading: false });
+            wx.showToast({ title: '网络异常', icon: 'none' });
+          }
+        });
+      }
+    });
+  },
+
   loadHistory() {
     const userId = getApp().globalData.openId || wx.getStorageSync('userId');
     if (!userId) return;
@@ -115,15 +189,26 @@ Page({
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   },
 
-  /* ===== 大字模式 ===== */
-  toggleFont() {
-    const fontLarge = !this.data.fontLarge;
-    wx.setStorageSync('fontLarge', fontLarge);
-    this.setData({ fontLarge });
-    wx.showToast({
-      title: fontLarge ? '已开启大字模式' : '已关闭大字模式',
-      icon: 'none'
-    });
+  /* ===== 适老化三档大字 ===== */
+  // 读取字号档位，向后兼容老的 fontLarge 布尔值
+  readFontScale() {
+    const v = wx.getStorageSync('fontScale');
+    if (v === 'large' || v === 'xl') return v;
+    // 老版本：fontLarge 是布尔值，true → 'large'
+    const old = wx.getStorageSync('fontLarge');
+    return old === true ? 'large' : 'normal';
+  },
+
+  // 点击三档分段选择器
+  setFontScale(e) {
+    const { scale } = e.currentTarget.dataset;
+    if (!scale || scale === this.data.fontScale) return;
+    wx.setStorageSync('fontScale', scale);
+    // 清掉旧的 fontLarge 标记，避免回滚混淆
+    try { wx.removeStorageSync('fontLarge'); } catch (e) {}
+    this.setData({ fontScale: scale });
+    const label = scale === 'xl' ? '超大字模式' : (scale === 'large' ? '大字模式' : '标准模式');
+    wx.showToast({ title: `已切换到${label}`, icon: 'none' });
   },
 
   viewHistoryDetail(e) {

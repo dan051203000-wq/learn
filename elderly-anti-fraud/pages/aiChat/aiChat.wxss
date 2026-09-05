@@ -215,3 +215,112 @@
   background: #ccc;
   color: #fff;
 }
+
+/* ===== 救援模式 ===== */
+.page-rescue {
+  background: #fff5f5;
+}
+
+.ai-banner-rescue {
+  background: linear-gradient(135deg, #c62828, #b71c1c);
+}
+
+/* 普通模式常驻救援入口（醒目红色条） */
+.rescue-entry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ef5350, #e53935);
+  color: #fff;
+  padding: 20rpx 32rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.rescue-entry-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.rescue-entry:active {
+  opacity: 0.85;
+}
+
+/* 救援模式顶部操作条 */
+.rescue-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 24rpx;
+  background: #fff;
+  border-bottom: 2rpx solid #ffcdd2;
+}
+
+.rescue-call {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #c62828, #b71c1c);
+  color: #fff;
+  padding: 14rpx 36rpx;
+  border-radius: 40rpx;
+}
+
+.rescue-call-icon {
+  font-size: 32rpx;
+  margin-right: 10rpx;
+}
+
+.rescue-call-text {
+  font-size: 30rpx;
+  font-weight: bold;
+}
+
+.rescue-exit {
+  font-size: 26rpx;
+  color: #999;
+  padding: 10rpx 24rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 30rpx;
+}
+
+/* 救援追问 chips */
+.rescue-chips {
+  background: #fff;
+  border-top: 2rpx solid #ffcdd2;
+}
+
+.rescue-chips-title {
+  color: #c62828 !important;
+}
+
+.rescue-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.rescue-chip {
+  display: flex;
+  align-items: center;
+  background: #ffebee;
+  border: 2rpx solid #ffcdd2;
+  border-radius: 30rpx;
+  padding: 14rpx 24rpx;
+  flex: 1 1 45%;
+  box-sizing: border-box;
+}
+
+.rescue-chip:active {
+  background: #ffcdd2;
+}
+
+.rescue-chip-icon {
+  font-size: 30rpx;
+  margin-right: 10rpx;
+}
+
+.rescue-chip-text {
+  font-size: 25rpx;
+  color: #c62828;
+  line-height: 1.3;
+}

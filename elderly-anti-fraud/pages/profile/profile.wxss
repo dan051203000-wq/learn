@@ -2,7 +2,49 @@
   padding: 20rpx 0 60rpx;
 }
 
-/* 大字模式：整体放大关键文字 */
+/* 三档大字：放大关键文字（large + xl 共用基础放大） */
+.font-scale-large .user-name,
+.font-scale-large .section-title,
+.font-scale-large .menu-title,
+.font-scale-large .history-text,
+.font-scale-large .setting-title,
+.font-scale-large .stat-num,
+.font-scale-xl .user-name,
+.font-scale-xl .section-title,
+.font-scale-xl .menu-title,
+.font-scale-xl .history-text,
+.font-scale-xl .setting-title,
+.font-scale-xl .stat-num {
+  font-size: 40rpx;
+}
+
+/* 超大字档：在 large 基础上再放大 */
+.font-scale-xl .user-name,
+.font-scale-xl .section-title,
+.font-scale-xl .menu-title,
+.font-scale-xl .stat-num {
+  font-size: 46rpx;
+}
+
+.font-scale-large .user-desc,
+.font-scale-large .setting-desc,
+.font-scale-large .stat-label,
+.font-scale-large .history-time,
+.font-scale-xl .user-desc,
+.font-scale-xl .setting-desc,
+.font-scale-xl .stat-label,
+.font-scale-xl .history-time {
+  font-size: 30rpx;
+}
+
+.font-scale-xl .user-desc,
+.font-scale-xl .setting-desc,
+.font-scale-xl .stat-label,
+.font-scale-xl .history-time {
+  font-size: 34rpx;
+}
+
+/* 老别名兼容 */
 .font-large .user-name,
 .font-large .section-title,
 .font-large .menu-title,
@@ -17,6 +59,43 @@
 .font-large .stat-label,
 .font-large .history-time {
   font-size: 30rpx;
+}
+
+/* 三档分段选择器 */
+.font-segmented {
+  display: flex;
+  background: #eef2f7;
+  border-radius: 18rpx;
+  padding: 6rpx;
+  margin-top: 16rpx;
+  gap: 6rpx;
+}
+
+.font-seg-item {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  font-size: 30rpx;
+  color: #555;
+  border-radius: 14rpx;
+  transition: all 0.2s;
+  min-height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.font-seg-active {
+  background: white;
+  color: #2196F3;
+  font-weight: bold;
+  box-shadow: 0 2rpx 8rpx rgba(33, 150, 243, 0.18);
+}
+
+/* 设置项纵向布局（标题 + 分段选择器） */
+.setting-item-column {
+  flex-direction: column;
+  align-items: stretch;
 }
 
 /* 用户卡片 */
@@ -226,4 +305,184 @@
 .menu-arrow {
   font-size: 40rpx;
   color: #ccc;
+}
+
+/* ===== AI 防护画像卡片 ===== */
+.profile-card {
+  background: linear-gradient(135deg, #fff8f0 0%, #fff 60%);
+  border-radius: 12rpx;
+  margin: 0 20rpx 20rpx;
+  padding: 28rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  border: 2rpx solid #ffe0b2;
+}
+
+.profile-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.profile-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #e65100;
+}
+
+.profile-ai {
+  font-size: 22rpx;
+  color: #fff;
+  background: linear-gradient(135deg, #ff9800, #ff6d00);
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.profile-loading {
+  padding: 30rpx 0;
+  text-align: center;
+}
+
+.profile-loading-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.profile-empty {
+  padding: 30rpx 0;
+  text-align: center;
+}
+
+.profile-empty-text {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.6;
+}
+
+.profile-empty-btn {
+  display: inline-block;
+  background-color: #ff9800;
+  color: white;
+  font-size: 26rpx;
+  border-radius: 30rpx;
+  padding: 12rpx 36rpx;
+  margin-top: 20rpx;
+}
+
+.profile-summary {
+  font-size: 30rpx;
+  color: #333;
+  line-height: 1.6;
+  padding: 16rpx 20rpx;
+  background-color: #fff3e0;
+  border-radius: 10rpx;
+  border-left: 6rpx solid #ff9800;
+  margin-bottom: 24rpx;
+}
+
+.profile-section {
+  margin-bottom: 24rpx;
+}
+
+.profile-sub-title {
+  font-size: 27rpx;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 14rpx;
+}
+
+.profile-tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.profile-tag {
+  font-size: 24rpx;
+  color: #e65100;
+  background-color: #fff3e0;
+  padding: 8rpx 20rpx;
+  border-radius: 24rpx;
+  margin-right: 14rpx;
+  margin-bottom: 14rpx;
+  border: 1rpx solid #ffe0b2;
+}
+
+.profile-list-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 14rpx;
+}
+
+.profile-bullet {
+  flex-shrink: 0;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background-color: #ff9800;
+  color: white;
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  margin-top: 4rpx;
+}
+
+.profile-list-text {
+  flex: 1;
+  font-size: 27rpx;
+  color: #444;
+  line-height: 1.6;
+}
+
+.profile-encour {
+  font-size: 26rpx;
+  color: #ff6d00;
+  text-align: center;
+  padding: 16rpx;
+  background-color: #fff8e1;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+  font-style: italic;
+}
+
+.profile-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #ffe0b2;
+}
+
+.profile-meta-text {
+  flex: 1;
+  font-size: 22rpx;
+  color: #999;
+  line-height: 1.4;
+}
+
+.profile-refresh {
+  font-size: 24rpx;
+  color: #ff9800;
+  padding: 8rpx 20rpx;
+  border: 1rpx solid #ffb74d;
+  border-radius: 24rpx;
+  margin-left: 16rpx;
+}
+
+/* 大字模式：画像关键文字放大 */
+.font-large .profile-title,
+.font-large .profile-summary {
+  font-size: 36rpx;
+}
+
+.font-large .profile-sub-title,
+.font-large .profile-list-text {
+  font-size: 32rpx;
+}
+
+.font-large .profile-tag,
+.font-large .profile-encour,
+.font-large .profile-meta-text {
+  font-size: 28rpx;
 }

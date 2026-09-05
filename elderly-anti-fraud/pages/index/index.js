@@ -116,5 +116,28 @@ Page({
     wx.navigateTo({
       url: '/pages/aiChat/aiChat'
     });
+  },
+
+  // 跳转「我的」页查看 AI 防护画像（profile 是 tabBar，用 switchTab）
+  goProfile() {
+    wx.switchTab({
+      url: '/pages/profile/profile'
+    });
+  },
+
+  // 一键进入 AI 紧急救援模式
+  goRescue() {
+    wx.navigateTo({
+      url: '/pages/aiChat/aiChat?mode=rescue'
+    });
+  },
+
+  // 分享：用 logo 作为分享卡片封面
+  onShareAppMessage() {
+    return {
+      title: '银发守护宝 · 让 AI 守护每一位长辈',
+      path: '/pages/index/index',
+      imageUrl: '/assets/logo_generated.jpg'
+    };
   }
 });

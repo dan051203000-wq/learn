@@ -221,11 +221,39 @@ textarea:focus {
 .gap-md { margin: 24rpx 0; }
 .gap-lg { margin: 40rpx 0; }
 
-/* ===== 适老化 toggle ===== */
-.font-large {
-  /* 在需要增强字号的地方额外+6rpx */
+/* ===== 适老化三档大字：标准 / 大字 / 超大字 =====
+ * 通过 container 上的 font-scale-normal/font-scale-large/font-scale-xl 类切换
+ * .font-large 保留为「大字」的兼容别名（旧页面 wxss 仍可用）
+ */
+.font-scale-normal {
+  /* 标准：使用 page 默认 32rpx，不额外放大 */
 }
 
+.font-scale-large .title,
+.font-scale-large .text-strong,
+.font-scale-xl .title,
+.font-scale-xl .text-strong {
+  font-size: 46rpx !important;
+}
+
+.font-scale-xl .title,
+.font-scale-xl .text-strong {
+  font-size: 52rpx !important;
+}
+
+.font-scale-large .subtitle,
+.font-scale-large .text,
+.font-scale-xl .subtitle,
+.font-scale-xl .text {
+  font-size: 36rpx !important;
+}
+
+.font-scale-xl .subtitle,
+.font-scale-xl .text {
+  font-size: 40rpx !important;
+}
+
+/* 老别名兼容：.font-large 等价于 .font-scale-large */
 .font-large .title,
 .font-large .text-strong {
   font-size: 46rpx !important;
@@ -234,4 +262,13 @@ textarea:focus {
 .font-large .subtitle,
 .font-large .text {
   font-size: 36rpx !important;
+}
+
+/* 点击热区全局提升：所有可点 view 至少 88rpx 高（微信适老化推荐值） */
+.list-item,
+.grid-item,
+.menu-item,
+.role-card,
+.call-item {
+  min-height: 88rpx;
 }
